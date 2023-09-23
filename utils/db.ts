@@ -1,7 +1,6 @@
-import artworkData from "../data/artwork.json" assert { type: "json" };
 import type { Artwork, GitHubUser, Reaction } from "../utils/types.ts";
 import { slug } from "slug/mod.ts";
-import { isAdmin } from "./user.ts";
+
 interface ReactionEntry {
   artworkId: Artwork["image"];
   user: GitHubUser["login"];
@@ -80,23 +79,6 @@ export async function getReactions(): Promise<ReactionEntry[]> {
   }
 
   return reactions;
-}
-
-export function loadStaticArtwork(): Artwork[] {
-  // Get images from /static directory
-  const artworks: Artwork[] = artworkData.map((a) => ({
-    id: slug(`${a.title} ${a.artist.name}`, {
-      lower: true,
-    }),
-    ...a,
-    artist: {
-      ...a.artist,
-      github: a.artist.github ?? "#",
-    },
-    date: new Date(a.date),
-  }));
-
-  return artworks;
 }
 
 export async function loadSavedArtwork(): Promise<Artwork[]> {
