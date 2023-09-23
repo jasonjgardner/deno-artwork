@@ -1,8 +1,5 @@
 import { JSX } from "preact";
 import type { Artwork } from "🛠️/types.ts";
-import { LikeButton } from "🏝️/LikeButton.tsx";
-import { LikeCount } from "📦/Reaction.tsx";
-import { GitHubIcon } from "📦/icon/mod.ts";
 import { slug } from "slug/mod.ts";
 
 export default function Item({ artwork }: { artwork: Artwork }): JSX.Element {
