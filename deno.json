@@ -40,6 +40,7 @@
     "@twind/preset-ext": "https://esm.sh/@twind/preset-ext@1.0.7",
     "@twind/preset-autoprefix": "https://esm.sh/@twind/preset-autoprefix@1.0.7",
     "$std/": "https://deno.land/std@0.200.0/",
+    "$gfm": "https://deno.land/x/gfm@0.2.3/mod.ts",
     "kv_oauth/": "https://deno.land/x/deno_kv_oauth@v0.7.0/",
     "imagescript/": "https://deno.land/x/imagescript@1.2.15/",
     "slug/": "https://deno.land/x/slug@v1.1.0/",
