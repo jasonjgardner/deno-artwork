@@ -23,5 +23,20 @@ export interface Artwork {
   alt: string;
   artist: Artist;
   license: string;
+  reactions?: Reactions;
 }
-export type Reaction = "👍" | "👎" | "❤️" | "🦕" | "🍕";
+
+export type Reaction = "👍" | "❤️" | "🦕" | "🍕";
+
+export type Reactions = Record<Reaction, number>;
+
+export interface ReactionEntry {
+  artworkId: Artwork["image"];
+  user: GitHubUser["login"];
+  reaction: Reaction;
+}
+
+export interface ArtworkEntry {
+  artwork: Artwork;
+  reactions: ReactionEntry[];
+}
