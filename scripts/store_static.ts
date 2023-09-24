@@ -1,19 +1,22 @@
-#!/usr/bin/env -S deno run -A --unstable
+#!/usr/bin/env -S deno run -A --unstable --location https://artworks.deno.dev
 import artworkData from "../data/artwork.json" assert { type: "json" };
 import type { Artwork } from "../utils/types.ts";
 import { slug } from "slug/mod.ts";
 import { deleteArtwork, loadSavedArtwork, saveArtwork } from "🛠️/db.ts";
+import { parse } from "$std/flags/mod.ts";
+
+const { clear } = parse(Deno.args, { boolean: ["clear"] });
 
 export function loadStaticArtwork(): Artwork[] {
   // Get images from /static directory
   const artworks: Artwork[] = artworkData.map((a) => ({
-    id: slug(`${a.title} ${a.artist.name}`, {
+    id: slug(`${a.title} ${a.artist.github}`, {
       lower: true,
     }),
     ...a,
     artist: {
       ...a.artist,
-      github: a.artist.github ?? "#",
+      github: a.artist.github ?? `#${slug(a.artist.name, { lower: true })}`,
     },
     date: new Date(a.date),
   }));
@@ -21,18 +24,37 @@ export function loadStaticArtwork(): Artwork[] {
   return artworks;
 }
 
-export async function main() {
+export async function deleteSavedArtwork() {
   const savedArtwork = await loadSavedArtwork();
   savedArtwork.forEach((art) => {
+    console.log("Deleting %c%s", "color: red", art.id);
     deleteArtwork(art);
-  });
-
-  const artwork = loadStaticArtwork();
-  artwork.forEach((art) => {
-    saveArtwork(art);
   });
 }
 
+export function saveStaticArtwork() {
+  const artwork = loadStaticArtwork();
+  artwork.forEach(async (art) => {
+    console.log("Saving %c%s", "color: cyan", art.id);
+    try {
+      const key = await saveArtwork(art);
+      console.log("Saved to %c%s", "color: gray", key.join("/"));
+    } catch (err) {
+      console.error(`Failed saving ${art.id}: %s`, err);
+    }
+  });
+}
+
+export async function main(clearExisting = false) {
+  if (clearExisting) {
+    console.log("%cClearing existing artwork...", "color: orange");
+    await deleteSavedArtwork();
+  }
+
+  console.log("%cSaving static artwork to KV database...", "color: green");
+  saveStaticArtwork();
+}
+
 if (import.meta.main) {
-  await main();
+  await main(clear);
 }

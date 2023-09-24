@@ -1,21 +1,52 @@
-import type { Artwork, GitHubUser, Reaction } from "../utils/types.ts";
+import type {
+  Artwork,
+  ArtworkEntry,
+  GitHubUser,
+  Reaction,
+  ReactionEntry,
+} from "🛠️/types.ts";
+import { REACTIONS } from "🛠️/constants.ts";
 import { slug } from "slug/mod.ts";
-
-interface ReactionEntry {
-  artworkId: Artwork["image"];
-  user: GitHubUser["login"];
-  reaction: Reaction;
-}
-
-interface ArtworkEntry {
-  artwork: Artwork;
-  reactions: ReactionEntry[];
-}
 
 const kv = await Deno.openKv();
 
+/**
+ * Helper function to convert Deno KV list selector to an array
+ * @param selector Deno KV selector
+ * @returns Promise containing KV records as an array
+ */
+export async function kvArray<T>(selector: Deno.KvListSelector): Promise<T[]> {
+  const records = kv.list<T>(selector);
+  const items = [];
+  for await (const res of records) {
+    items.push(res.value);
+  }
+
+  return items;
+}
+
+/**
+ * Create an object with all reactions set to 0
+ * @returns Initial reactions object
+ */
+export function mapInitialReactions() {
+  return Object.fromEntries(REACTIONS.map((r) => [r, 0]));
+}
+
+/**
+ * Save the user's reaction to the artwork
+ * @param artworkId Artwork ID
+ * @param user User's GitHub login
+ * @param reaction Reaction to save
+ * @returns Promise containing the versionstamp of the saved reaction
+ * @throws Error if the reaction could not be saved
+ * @example
+ * ```ts
+ * setReaction(artwork.id, user.login, "👍" as Reaction);
+ * ```
+ */
 export async function setReaction(
-  artworkId: Artwork["image"],
+  artworkId: Artwork["id"],
   user: GitHubUser["login"],
   reaction: Reaction,
 ) {
@@ -27,14 +58,14 @@ export async function setReaction(
 }
 
 export async function removeReaction(
-  artworkId: Artwork["image"],
+  artworkId: Artwork["id"],
   user: GitHubUser["login"],
 ) {
   await kv.delete(["reaction", artworkId, user]);
 }
 
 export async function getArtworkReactions(
-  artworkId: Artwork["image"],
+  artworkId: Artwork["id"],
 ): Promise<ReactionEntry[]> {
   const records = kv.list<Reaction>({ prefix: ["reaction", artworkId] });
   const reactions = [];
@@ -57,7 +88,7 @@ export async function getUserReactions(
   for await (const res of records) {
     if (res.key[2] === user) {
       reactions.push({
-        artworkId: res.key[1] as Artwork["image"],
+        artworkId: res.key[1] as Artwork["id"],
         user,
         reaction: res.value,
       });
@@ -72,7 +103,7 @@ export async function getReactions(): Promise<ReactionEntry[]> {
   const reactions = [];
   for await (const res of records) {
     reactions.push({
-      artworkId: res.key[1] as Artwork["image"],
+      artworkId: res.key[1] as Artwork["id"],
       user: res.key[2] as GitHubUser["login"],
       reaction: res.value,
     });
@@ -82,13 +113,7 @@ export async function getReactions(): Promise<ReactionEntry[]> {
 }
 
 export async function loadSavedArtwork(): Promise<Artwork[]> {
-  const records = kv.list({ prefix: ["artist"] });
-  const artworks = [];
-  for await (const res of records) {
-    artworks.push(res.value as Artwork);
-  }
-
-  return artworks;
+  return await kvArray({ prefix: ["artist"] });
 }
 
 export function deleteArtwork({ id, artist }: Artwork) {
@@ -99,7 +124,6 @@ export function deleteArtwork({ id, artist }: Artwork) {
 export async function getArtwork(
   id?: Artwork["id"],
 ): Promise<Artwork[] | Artwork> {
-  // const allArtwork = [...loadStaticArtwork(), ...await loadSavedArtwork()];
   const allArtwork = await loadSavedArtwork();
 
   if (!id) {
@@ -114,7 +138,7 @@ export async function getArtwork(
   return art;
 }
 
-export async function saveArtwork(artwork: Artwork) {
+export async function saveArtwork(artwork: Artwork): Promise<string[]> {
   const key = [
     "artist",
     artwork.artist.github ?? slug(artwork.artist.name, { lower: true }),
@@ -139,6 +163,8 @@ export async function saveArtwork(artwork: Artwork) {
   if (!res.ok || !artRes.ok) {
     throw new Error(`Failed to save artwork: ${key.join("/")}`);
   }
+
+  return key;
 }
 
 export async function getArtworkByArtist(
