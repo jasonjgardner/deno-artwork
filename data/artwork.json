@@ -158,7 +158,7 @@
     "date": "2020-06-17",
     "image": "/images/artwork/DenoLogo3D-Anim.gif",
     "title": "Deno Logo in 3D",
-    "alt": "a animated, green 3d deno mascot standing in the rain",
+    "alt": "a animated, green 3D deno mascot standing in the rain",
     "link": "https://github.com/MasterJames/high-res-deno-logo",
     "artist": {
       "name": "Master James",
@@ -169,12 +169,13 @@
   },
   {
     "date": "2019-04-14",
-    "image": "/images/deno_logo_4.gif",
+    "image": "/images/artwork/deno_logo_4.gif",
     "title": "Pixelated Deno",
     "alt": "an animated deno logo in 8-bit style",
     "link": "https://twitter.com/_tanakaworld/status/1117419541393358848",
     "artist": {
       "name": "tanakaworld",
+      "github": "tanakaworld",
       "profile_image": "https://unavatar.io/twitter/_tanakaworld",
       "twitter": "_tanakaworld"
     },

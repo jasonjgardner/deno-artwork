@@ -1,0 +1,94 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "type": "array",
+    "items": {
+        "$ref": "#/definitions/DenoArtwork"
+    },
+    "definitions": {
+        "DenoArtwork": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "alt": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "https"
+                    ]
+                },
+                "artist": {
+                    "$ref": "#/definitions/Artist"
+                },
+                "license": {
+                    "enum": [
+                        "CC0",
+                        "CC-BY",
+                        "CC-BY-NC",
+                        "CC-BY-SA",
+                        "CC-BY-SA-4.0",
+                        "CC-BY-NC-SA",
+                        "CC-BY-ND",
+                        "CC-BY-NC-ND",
+                        "MIT",
+                        "Restricted use"
+                    ]
+                }
+            },
+            "required": [
+                "alt",
+                "artist",
+                "date",
+                "image",
+                "license",
+                "title"
+            ],
+            "title": "Deno Artwork"
+        },
+        "Artist": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "profile_image": {
+                    "type": "string",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "https"
+                    ]
+                },
+                "github": {
+                    "type": "string"
+                },
+                "twitter": {
+                    "type": "string"
+                },
+                "instagram": {
+                    "type": "string"
+                },
+                "web": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "github",
+                "name"
+            ],
+            "title": "Artist"
+        }
+    }
+}
