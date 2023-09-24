@@ -2,7 +2,7 @@
   "lock": false,
   "tasks": {
     "check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
-    "start": "deno run -A --watch=static/,routes/ --unstable dev.ts",
+    "start": "deno run -A --watch=static/,routes/ --unstable --location https://artwork.deno.dev dev.ts",
     "build": "deno run -A dev.ts build",
     "preview": "deno run -A main.ts",
     "update": "deno run -A -r https://fresh.deno.dev/update .",
@@ -41,6 +41,7 @@
     "@twind/preset-autoprefix": "https://esm.sh/@twind/preset-autoprefix@1.0.7",
     "$std/": "https://deno.land/std@0.200.0/",
     "kv_oauth/": "https://deno.land/x/deno_kv_oauth@v0.7.0/",
+    "imagescript/": "https://deno.land/x/imagescript@1.2.15/",
     "slug/": "https://deno.land/x/slug@v1.1.0/",
     "$icon/": "https://deno.land/x/tabler_icons_tsx@0.0.3/tsx/",
     "🛠️/": "./utils/",
