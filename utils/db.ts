@@ -182,7 +182,7 @@ export async function getArtworkByArtist(
 export async function sortByReactionCount(): Promise<ArtworkEntry[]> {
   const artworks = await getArtwork() as Artwork[];
   const reactions = await getReactions();
-  const reactionCounts = new Map<Artwork["image"], number>();
+  const reactionCounts = new Map<Artwork["id"], number>();
 
   for (const reaction of reactions) {
     const count = reactionCounts.get(reaction.artworkId) ?? 0;
@@ -200,4 +200,25 @@ export async function sortByReactionCount(): Promise<ArtworkEntry[]> {
     artwork,
     reactions: reactions.filter((r) => r.artworkId === artwork.image),
   }));
+}
+
+export async function logUserSignIn(user: GitHubUser) {
+  const key = [
+    "user",
+    user.login,
+  ];
+
+  const res = await kv.set(
+    key,
+    [user.id, user.login],
+    {
+      expireIn: 60 * 60 * 24,
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to log user: ${key.join("/")}`);
+  }
+
+  return (await kv.get<[string, string]>(key)).versionstamp;
 }
