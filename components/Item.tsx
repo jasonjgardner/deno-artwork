@@ -1,8 +1,9 @@
 import { JSX } from "preact";
-import type { Artwork } from "🛠️/types.ts";
 import { slug } from "slug/mod.ts";
+import LikeButton from "🏝️/LikeButton.tsx";
+import type { Artwork } from "🛠️/types.ts";
 
-export default function Item({ artwork }: { artwork: Artwork }): JSX.Element {
+export default function Item({ artwork }: { artwork: Artwork }) {
   return (
     <article class="flex justify-start items-start group">
       <div class="border border(gray-500 opacity-50) p-2 rounded-lg bg-white shadow-md">
@@ -42,6 +43,7 @@ export default function Item({ artwork }: { artwork: Artwork }): JSX.Element {
             ({artwork.date.getFullYear()})
           </time>
         </p>
+        <LikeButton {...{ artwork }} />
       </div>
     </article>
   );

@@ -5,24 +5,35 @@
 import * as $0 from "./routes/_404.tsx";
 import * as $1 from "./routes/_app.tsx";
 import * as $2 from "./routes/_layout.tsx";
-import * as $3 from "./routes/api/artwork.ts";
-import * as $4 from "./routes/artist/[username].tsx";
-import * as $5 from "./routes/greet/[name].tsx";
-import * as $6 from "./routes/index.tsx";
-import * as $7 from "./routes/piece/[id]/index.tsx";
+import * as $3 from "./routes/admin/index.tsx";
+import * as $4 from "./routes/api/artwork.ts";
+import * as $5 from "./routes/artist/[username].tsx";
+import * as $6 from "./routes/blog/[slug].tsx";
+import * as $7 from "./routes/greet/[name].tsx";
+import * as $8 from "./routes/index.tsx";
+import * as $9 from "./routes/piece/[id]/index.tsx";
+import * as $10 from "./routes/piece/[id]/like.ts";
+import * as $11 from "./routes/piece/[id]/og.ts";
+import * as $$0 from "./islands/LikeButton.tsx";
 
 const manifest = {
   routes: {
     "./routes/_404.tsx": $0,
     "./routes/_app.tsx": $1,
     "./routes/_layout.tsx": $2,
-    "./routes/api/artwork.ts": $3,
-    "./routes/artist/[username].tsx": $4,
-    "./routes/greet/[name].tsx": $5,
-    "./routes/index.tsx": $6,
-    "./routes/piece/[id]/index.tsx": $7,
+    "./routes/admin/index.tsx": $3,
+    "./routes/api/artwork.ts": $4,
+    "./routes/artist/[username].tsx": $5,
+    "./routes/blog/[slug].tsx": $6,
+    "./routes/greet/[name].tsx": $7,
+    "./routes/index.tsx": $8,
+    "./routes/piece/[id]/index.tsx": $9,
+    "./routes/piece/[id]/like.ts": $10,
+    "./routes/piece/[id]/og.ts": $11,
   },
-  islands: {},
+  islands: {
+    "./islands/LikeButton.tsx": $$0,
+  },
   baseUrl: import.meta.url,
 };
 
