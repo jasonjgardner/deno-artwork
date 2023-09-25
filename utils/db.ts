@@ -98,8 +98,21 @@ export async function getUserReactions(
   return reactions;
 }
 
-export async function getReactions(): Promise<ReactionEntry[]> {
-  const records = kv.list<Reaction>({ prefix: ["reaction"] });
+/**
+ * Get all reactions or reactions for a specific artwork
+ * @param id Optional artwork ID to get reactions for
+ * @returns List of reactions or a single reaction if an ID is provided
+ * @example
+ * ```ts
+ * const reactions = await getReactions();
+ * const reactionsForArtwork = await getReactions(artwork.id);
+ * ```
+ */
+export async function getReactions(
+  id?: Artwork["id"],
+): Promise<ReactionEntry[] | ReactionEntry> {
+  const prefix = id ? ["reaction", id] : ["reaction"];
+  const records = kv.list<Reaction>({ prefix });
   const reactions = [];
   for await (const res of records) {
     reactions.push({
@@ -109,7 +122,7 @@ export async function getReactions(): Promise<ReactionEntry[]> {
     });
   }
 
-  return reactions;
+  return id ? reactions[0] : reactions;
 }
 
 export async function loadSavedArtwork(): Promise<Artwork[]> {
@@ -170,35 +183,38 @@ export async function saveArtwork(artwork: Artwork): Promise<string[]> {
 export async function getArtworkByArtist(
   artist: Artwork["artist"]["github"],
 ): Promise<Artwork[]> {
-  const records = kv.list({ prefix: ["artist", artist] });
-  const artworks = [];
-  for await (const res of records) {
-    artworks.push(res.value as Artwork);
-  }
-
-  return artworks;
+  return await kvArray<Artwork>({ prefix: ["artist", artist] });
 }
 
-export async function sortByReactionCount(): Promise<ArtworkEntry[]> {
-  const artworks = await getArtwork() as Artwork[];
-  const reactions = await getReactions();
+export async function sortByReactionCount(
+  artworks: Artwork[],
+): Promise<ArtworkEntry[]> {
+  const reactions = await getReactions() as ReactionEntry[];
   const reactionCounts = new Map<Artwork["id"], number>();
 
   for (const reaction of reactions) {
-    const count = reactionCounts.get(reaction.artworkId) ?? 0;
+    const { artworkId } = reactions.find((r) =>
+      r.artworkId === reaction.artworkId
+    ) ?? {};
+
+    if (!artworkId) {
+      continue;
+    }
+
+    const count = reactionCounts.get(artworkId) ?? 0;
     reactionCounts.set(reaction.artworkId, count + 1);
   }
 
   artworks.sort((a, b) => {
-    const aCount = reactionCounts.get(a.image) ?? 0;
-    const bCount = reactionCounts.get(b.image) ?? 0;
+    const aCount = reactionCounts.get(a.id) ?? 0;
+    const bCount = reactionCounts.get(b.id) ?? 0;
 
     return bCount - aCount;
   });
 
   return artworks.map((artwork) => ({
     artwork,
-    reactions: reactions.filter((r) => r.artworkId === artwork.image),
+    reactions: reactions.filter((r) => r.artworkId === artwork.id),
   }));
 }
 

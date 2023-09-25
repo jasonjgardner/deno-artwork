@@ -33,12 +33,17 @@ export const handler = async (
 
   if (req.method === "GET") {
     const artwork = await getArtwork(id) as Artwork;
-    const reactions = await getReactionCount(artwork);
 
-    return new Response(JSON.stringify({ reactions }), {
-      headers: { "content-type": "application/json" },
-      status: 200,
-    });
+    return new Response(
+      JSON.stringify({
+        details: await getArtworkReactions(artwork.id),
+        reactions: await getReactionCount(artwork),
+      }),
+      {
+        headers: { "content-type": "application/json" },
+        status: 200,
+      },
+    );
   }
 
   if (req.method !== "POST") {
