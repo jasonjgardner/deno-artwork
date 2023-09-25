@@ -1,12 +1,23 @@
 import { useEffect, useState } from "preact/hooks";
-import type { Artwork, Reaction } from "🛠️/types.ts";
+import type {
+  Artwork,
+  GitHubUser,
+  Reaction,
+  ReactionEntry,
+  Reactions,
+} from "🛠️/types.ts";
 import { REACTIONS } from "🛠️/constants.ts";
 
 export interface LikeButtonProps {
   artwork: Artwork;
 }
 
-const getReactions = async (artwork: Artwork) => {
+type ReactionDetails = Record<Reaction, Array<GitHubUser["login"]>>;
+
+const getReactions = async (artwork: Artwork): Promise<{
+  reactions: Reactions;
+  details: ReactionEntry[];
+}> => {
   const res = await fetch(`/piece/${artwork.id}/like`);
   if (res.status !== 200) {
     throw new Error(`Failed to get reactions for ${artwork.id}`);
@@ -14,7 +25,10 @@ const getReactions = async (artwork: Artwork) => {
   return await res.json();
 };
 
-const postReaction = async (artwork: Artwork, reaction: Reaction) => {
+const postReaction = async (
+  artwork: Artwork,
+  reaction: Reaction,
+): Promise<ReactionEntry> => {
   const res = await fetch(`/piece/${artwork.id}/like`, {
     method: "POST",
     body: JSON.stringify({ reaction }),
@@ -22,20 +36,32 @@ const postReaction = async (artwork: Artwork, reaction: Reaction) => {
   if (res.status !== 200) {
     throw new Error(`Failed to react with ${reaction}`);
   }
+
+  return await res.json();
 };
 
 export default function LikeButton({ artwork }: LikeButtonProps) {
   const [liked, setLiked] = useState(false);
-  const [reactions, setReactions] = useState<Record<Reaction, number>>(
-    Object.fromEntries(REACTIONS.map((r) => [r, 0])) as Record<
-      Reaction,
-      number
-    >,
+  const [reactions, setReactions] = useState<Reactions>(
+    artwork.reactions ??
+      Object.fromEntries(REACTIONS.map((r) => [r, 0])) as Reactions,
+  );
+  const [reactionDetails, setReactionDetails] = useState<ReactionDetails>(
+    Object.fromEntries(
+      REACTIONS.map((r) => [r as Reaction, [] as GitHubUser["login"][]]),
+    ) as ReactionDetails,
   );
 
   const handleReaction = (reaction: Reaction): void => {
-    postReaction(artwork, reaction);
     setLiked(true);
+    postReaction(artwork, reaction).then((res) => {
+      if (reactionDetails[reaction] === undefined) {
+        reactionDetails[reaction] = [];
+      }
+
+      reactionDetails[reaction] = [...reactionDetails[reaction], res.user];
+      setReactionDetails({ ...reactionDetails });
+    });
   };
 
   useEffect(() => {
@@ -44,23 +70,32 @@ export default function LikeButton({ artwork }: LikeButtonProps) {
         ...reactions,
         ...res.reactions,
       });
+
+      const details = Object.fromEntries(
+        res.details.map((detail) => [detail.reaction, [...[detail.user]]]),
+      ) as ReactionDetails;
+
+      setReactionDetails(details);
     });
-  }, [artwork]);
+  }, [liked]);
 
   return (
-    <div class="flex items-center justify-start gap-2 ml-1.5">
+    <div class="flex items-center justify-between w-full divide-x border-gray-200">
       {Object.entries(reactions).map(([reaction, count]) => (
-        <button
-          class="flex items-center justify-center bg(white hover:gray-100) hover:(bg(white))"
-          onClick={() => handleReaction(reaction as Reaction)}
-          disabled={liked}
-          title={reactions[reaction as Reaction]?.toString()}
-        >
-          {reaction}
-          <span class="text(gray-800 sm) font(normal sans) ml-1">
-            {count}
-          </span>
-        </button>
+        <div class="flex-1 flex justify-center">
+          <button
+            class="group~btn flex(row nowrap) items-center text-sm border(blue-100) rounded-md px-2 bg(white hover:gray-100) hover:(bg(white)) py-2"
+            onClick={() => handleReaction(reaction as Reaction)}
+            disabled={liked}
+            title={(reactionDetails[reaction as Reaction] ?? []).join("\r\n") ??
+              `${count} ${reaction}s`}
+          >
+            {reaction}
+            <span class="text(gray-800 xs) font(normal sans) ml-1 group~btn:hover(text-blue-900)">
+              {count}
+            </span>
+          </button>
+        </div>
       ))}
     </div>
   );
