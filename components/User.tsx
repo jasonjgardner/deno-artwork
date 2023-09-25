@@ -1,21 +1,20 @@
+import { useContext } from "preact/hooks";
 import type { GitHubUser } from "🛠️/types.ts";
-import { isAdmin } from "🛠️/user.ts";
-export default function Session(
-  { user }: { user: GitHubUser | null | undefined },
-) {
+import { isAdmin, UserContext } from "🛠️/user.ts";
+
+export default function LoginButton() {
+  const user = useContext(UserContext);
   const userIsLoggedIn = user !== undefined && user !== null;
   const userIsAdmin = userIsLoggedIn && isAdmin(user?.login ?? "");
 
   if (!userIsLoggedIn) {
     return (
-      <div class="max-w-screen-lg mx-auto mt-8">
-        <h4 class="text-4xl font-bold tracking-tight">Login</h4>
-        <p class="mt-4 text-lg">
-          <a href="/oauth/signin" class="link">
-            Login
-          </a>
-        </p>
-      </div>
+      <a
+        href="/oauth/signin"
+        class="text(white opacity-90 sm) font(medium)"
+      >
+        Sign in with GitHub
+      </a>
     );
   }
 
