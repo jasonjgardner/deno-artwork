@@ -1,8 +1,8 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { BrowserIcon, GitHubIcon, InstagramIcon, XIcon } from "📦/icon/mod.ts";
 import type { Artist as IArtist, Artwork } from "🛠️/types.ts";
-import { DEFAULT_AVATAR } from "🛠️/constants.ts";
 import { getArtworkByArtist } from "🛠️/db.ts";
+import { getRandomAvatar } from "🛠️/mod.ts";
 import Item from "📦/Item.tsx";
 
 interface Data {
@@ -44,12 +44,12 @@ export default function Artist({ params, data }: PageProps<Data | null>) {
   }
 
   return (
-    <div class="p-2">
+    <div class="container p-2 mx-auto flex flex-col gap-y-4">
       <div class="flex justify-start items-start">
         <img
-          src={artist?.profile_image ?? DEFAULT_AVATAR}
+          src={artist?.profile_image ?? getRandomAvatar()}
           alt={artist.name}
-          class="rounded-md w-24 h-24 border border(gray-500 opacity-50) shadow-sm"
+          class="rounded-md w-24 h-24 border(gray-500 opacity-50) shadow-sm"
           height="32"
           width="32"
         />
@@ -114,10 +114,10 @@ export default function Artist({ params, data }: PageProps<Data | null>) {
           </nav>
         </div>
       </div>
-      <div class="grid">
-        {data?.artworks.map((artwork, idx) => (
+      <div class="w-full grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 place-items-center">
+        {data?.artworks.map((artwork) => (
           <Item
-            key={idx}
+            key={artwork.id}
             artwork={artwork}
           />
         ))}
