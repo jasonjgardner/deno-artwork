@@ -12,7 +12,7 @@ export default function UserList(props: UserListProps) {
     <div
       class={cx(
         "bg(black opacity-90) backdrop-blur-sm shadow-md flex(col nowrap)",
-        "absolute z-30",
+        "absolute",
         "p-2 rounded-md border border(gray-300) outline outline(1 gray-800)",
         "w-32 max-h-1/2 overflow-y-auto",
         "bottom-full -translate-y-1",

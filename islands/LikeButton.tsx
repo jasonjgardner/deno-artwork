@@ -1,19 +1,18 @@
+import { type Signal, signal } from "@preact/signals";
+import { useState } from "preact/hooks";
 import { cx } from "@twind/core";
-import { useContext, useEffect, useState } from "preact/hooks";
+import { useContext } from "preact/hooks";
 import type {
   Artwork,
   ArtworkEntry,
-  GitHubUser,
   Reaction,
   ReactionDetails,
   ReactionEntry,
   Reactions,
 } from "🛠️/types.ts";
-import { REACTIONS } from "🛠️/constants.ts";
 import { UserContext } from "🛠️/user.ts";
-import { ArtworkContext } from "🛠️/art.ts";
-import { mapInitialReactions } from "🛠️/db.ts";
-import UserList from "📦/UserList.tsx";
+import { buildReactionDetails, mapInitialReactions } from "🛠️/mod.ts";
+import UserList from "🏝️/UserList.tsx";
 
 const getReactions = async (artwork: Artwork): Promise<{
   reactions: Reactions;
@@ -43,38 +42,33 @@ const postReaction = async (
 
 export default function LikeButton({ entry }: { entry: ArtworkEntry }) {
   const user = useContext(UserContext);
+
   const { artwork, reactions } = entry;
-
-  const reactionDetails = Object.entries(reactions ?? {}).reduce(
-    (acc, [idx, entry]) => {
-      const { reaction, user } = entry;
-      if (!acc[reaction as Reaction]) {
-        acc[reaction as Reaction] = [];
-      }
-
-      acc[reaction as Reaction].push(user);
-      return acc;
-    },
-    {} as ReactionDetails,
-  );
-
-  const allReactions = {
+  const allReactions: Signal<ReactionDetails> = signal({
     ...mapInitialReactions(),
-    ...reactionDetails,
-  };
+    ...buildReactionDetails(reactions),
+  });
 
   const allReactionsLength = Object.keys(allReactions).length;
 
+  const [reactionDetails, setReactionDetails] = useState<ReactionDetails>(
+    allReactions.value,
+  );
+
   const handleReaction = (reaction: Reaction): void => {
-    if (!user || !artwork) {
+    if (!user) {
       return;
     }
-    postReaction(artwork, reaction);
+    postReaction(artwork, reaction).then(() => {
+      allReactions.value[reaction].push(user.login);
+      allReactions.value = { ...allReactions.value };
+      setReactionDetails(allReactions.value);
+    });
   };
 
   return (
     <div class="flex items-center justify-between w-full divide-x border-gray-200">
-      {Object.entries(allReactions).map(([reaction, users], idx) => {
+      {Object.entries(reactionDetails).map(([reaction, users], idx) => {
         const count = users.length;
         return (
           <div
@@ -89,7 +83,8 @@ export default function LikeButton({ entry }: { entry: ArtworkEntry }) {
             <button
               class={cx(
                 "flex(row nowrap) items-center p-2 text(base center) font(sans medium) w-full",
-                "siblings:(opacity-0 group-btn-hover:(opacity-100) transition-opacity duration-200 ease-out)",
+                "siblings:(opacity-0 group-btn-hover:(opacity-100 -translate-y-1) translate-y-full transition-[opacity,transform] delay-100 duration-200 ease-out)",
+                "disabled:(opacity-50 cursor-default)",
               )}
               onClick={() => handleReaction(reaction as Reaction)}
               type="button"

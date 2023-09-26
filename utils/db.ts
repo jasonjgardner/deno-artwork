@@ -3,11 +3,10 @@ import type {
   ArtworkEntry,
   GitHubUser,
   Reaction,
-  ReactionDetails,
   ReactionEntry,
 } from "🛠️/types.ts";
-import { REACTIONS } from "🛠️/constants.ts";
 import { slug } from "slug/mod.ts";
+
 const kv = await Deno.openKv();
 
 /**
@@ -23,16 +22,6 @@ export async function kvArray<T>(selector: Deno.KvListSelector): Promise<T[]> {
   }
 
   return items;
-}
-
-/**
- * Create an object with all reactions set to 0
- * @returns Initial reactions object
- */
-export function mapInitialReactions() {
-  return Object.fromEntries(
-    REACTIONS.map((r) => [r, [] as string[]]),
-  ) as ReactionDetails;
 }
 
 /**

@@ -13,8 +13,11 @@ import * as $7 from "./routes/index.tsx";
 import * as $8 from "./routes/piece/[id]/index.tsx";
 import * as $9 from "./routes/piece/[id]/like.ts";
 import * as $10 from "./routes/piece/[id]/og.ts";
-import * as $$0 from "./islands/LikeButton.tsx";
-import * as $$1 from "./islands/ShareButton.tsx";
+import * as $$0 from "./islands/Gallery.tsx";
+import * as $$1 from "./islands/Item.tsx";
+import * as $$2 from "./islands/LikeButton.tsx";
+import * as $$3 from "./islands/ShareButton.tsx";
+import * as $$4 from "./islands/UserList.tsx";
 
 const manifest = {
   routes: {
@@ -31,8 +34,11 @@ const manifest = {
     "./routes/piece/[id]/og.ts": $10,
   },
   islands: {
-    "./islands/LikeButton.tsx": $$0,
-    "./islands/ShareButton.tsx": $$1,
+    "./islands/Gallery.tsx": $$0,
+    "./islands/Item.tsx": $$1,
+    "./islands/LikeButton.tsx": $$2,
+    "./islands/ShareButton.tsx": $$3,
+    "./islands/UserList.tsx": $$4,
   },
   baseUrl: import.meta.url,
 };
