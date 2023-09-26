@@ -33,7 +33,7 @@ export default function Artwork(
 ) {
   const { image, artist, title, alt, license, id, link, date, shareUrl } =
     data ?? {
-      shareUrl: new URL(`https://${location.hostname}/piece/${params.id}`),
+      shareUrl: new URL(`/piece/${params.id}`),
     };
 
   return (
@@ -45,11 +45,11 @@ export default function Artwork(
         <meta property="og:description" content={alt ?? title} />
         <meta
           property="og:image"
-          content={`https://${location.hostname}/piece/${id}/og`}
+          content={`${shareUrl.href}/og`}
         />
         <meta
           property="og:url"
-          content={`https://${location.hostname}/piece/${id}`}
+          content={shareUrl.href}
         />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Deno Artwork" />
