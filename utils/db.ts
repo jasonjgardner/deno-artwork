@@ -3,11 +3,11 @@ import type {
   ArtworkEntry,
   GitHubUser,
   Reaction,
+  ReactionDetails,
   ReactionEntry,
 } from "🛠️/types.ts";
 import { REACTIONS } from "🛠️/constants.ts";
 import { slug } from "slug/mod.ts";
-
 const kv = await Deno.openKv();
 
 /**
@@ -30,7 +30,9 @@ export async function kvArray<T>(selector: Deno.KvListSelector): Promise<T[]> {
  * @returns Initial reactions object
  */
 export function mapInitialReactions() {
-  return Object.fromEntries(REACTIONS.map((r) => [r, 0]));
+  return Object.fromEntries(
+    REACTIONS.map((r) => [r, [] as string[]]),
+  ) as ReactionDetails;
 }
 
 /**
@@ -184,6 +186,16 @@ export async function getArtworkByArtist(
   artist: Artwork["artist"]["github"],
 ): Promise<Artwork[]> {
   return await kvArray<Artwork>({ prefix: ["artist", artist] });
+}
+
+export async function getArtworkEntries(): Promise<ArtworkEntry[]> {
+  const artworks = await loadSavedArtwork();
+  const reactions = await getReactions() as ReactionEntry[];
+
+  return artworks.map((artwork) => ({
+    artwork,
+    reactions: reactions.filter(({ artworkId }) => artworkId === artwork.id),
+  }));
 }
 
 export async function sortByReactionCount(

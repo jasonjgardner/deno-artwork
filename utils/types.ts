@@ -30,6 +30,8 @@ export type Reaction = "👍" | "❤️" | "🦕" | "🍕";
 
 export type Reactions = Record<Reaction, number>;
 
+export type ReactionDetails = Record<Reaction, Array<GitHubUser["login"]>>;
+
 export interface ReactionEntry {
   artworkId: Artwork["image"];
   user: GitHubUser["login"];
