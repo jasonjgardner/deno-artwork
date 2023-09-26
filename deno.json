@@ -33,6 +33,7 @@
     "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.2.3",
     "twind": "https://esm.sh/twind@0.16.19",
     "twind/": "https://esm.sh/twind@0.16.19/",
+    "@twind/core": "https://esm.sh/@twind/core@1.1.3",
     "@twind/preset-typography": "https://esm.sh/@twind/preset-typography@1.0.7",
     "@twind/preset-tailwind-forms": "https://esm.sh/@twind/preset-tailwind-forms@1.1.2",
     "@twind/preset-tailwind": "https://esm.sh/@twind/preset-tailwind@1.1.4",

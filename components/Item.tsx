@@ -2,16 +2,19 @@ import { useContext } from "preact/hooks";
 import { slug } from "slug/mod.ts";
 import LikeButton from "🏝️/LikeButton.tsx";
 import { UserContext } from "🛠️/user.ts";
-import type { Artwork } from "🛠️/types.ts";
+import type { ArtworkEntry } from "🛠️/types.ts";
 
-export default function Item({ artwork }: { artwork: Artwork }) {
+export default function Item({ entry }: { entry: ArtworkEntry }) {
   const user = useContext(UserContext);
+  const { artwork } = entry;
+
   return (
     <article class="flex justify-start items-start group">
       <div class="bg-white 
         border border(gray-500 opacity-50) rounded-lg 
         shadow-md hover:(shadow-lg border-gray-500)
-        transition transition[colors,shadow] duration-200 ease-out">
+        transition transition[colors,shadow] duration-200 ease-out
+        overflow-hidden">
         <div class="m-0 pb-2">
           <a
             href={`/piece/${artwork.id}`}
@@ -23,7 +26,7 @@ export default function Item({ artwork }: { artwork: Artwork }) {
               rounded-md border border-gray-400
               overflow-hidden
               scale-95
-              group-hover:(scale-100 rounded-b-none shadow-none border(opacity-75 x-0 t-0)) transition-[transform,colors,shadow] duration-200 ease-out">
+              group-hover:(scale-100 rounded-b-none shadow-none border(opacity-75 x-0 t-0) mt-px) transition-[transform,colors,shadow] duration-200 ease-out">
               <img
                 class="object-cover aspect-square
                   h-96 w-96"
@@ -58,15 +61,15 @@ export default function Item({ artwork }: { artwork: Artwork }) {
           </p>
         </div>
 
-        <div class="relative flex items-center justify-between mt-2.5 border(gray-100 t group-hover:gray-300) transition-colors ease-out duration-200 rounded-b-lg overflow-hidden px-2">
-          <LikeButton {...{ artwork }} />
+        <div class="relative flex items-center justify-between mt-2.5 border(gray-100 t group-hover:gray-300) transition-colors ease-out duration-200">
+          <LikeButton {...{ entry }} />
           {user === null && (
             <a
               href="/oauth/signin"
               class="absolute z-10
-                bg-[rgba(255,255,255,0.9)] backdrop-blur-md
+                bg-[rgba(255,255,255,0.9)] filter backdrop-blur-md
                 font(semibold sans) text(md center blue-500 underline) hover:no-underline
-                ml-1 h-full w-full
+                ml-1 h-full w-full px-2
                 flex items-center justify-center
                 translate(y-full group-hover:(y-0))
                 transition-transform duration-200 ease-out

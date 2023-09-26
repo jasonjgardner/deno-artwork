@@ -1,18 +1,19 @@
-import { useEffect, useState } from "preact/hooks";
+import { cx } from "@twind/core";
+import { useContext, useEffect, useState } from "preact/hooks";
 import type {
   Artwork,
+  ArtworkEntry,
   GitHubUser,
   Reaction,
+  ReactionDetails,
   ReactionEntry,
   Reactions,
 } from "🛠️/types.ts";
 import { REACTIONS } from "🛠️/constants.ts";
-
-export interface LikeButtonProps {
-  artwork: Artwork;
-}
-
-type ReactionDetails = Record<Reaction, Array<GitHubUser["login"]>>;
+import { UserContext } from "🛠️/user.ts";
+import { ArtworkContext } from "🛠️/art.ts";
+import { mapInitialReactions } from "🛠️/db.ts";
+import UserList from "📦/UserList.tsx";
 
 const getReactions = async (artwork: Artwork): Promise<{
   reactions: Reactions;
@@ -40,63 +41,77 @@ const postReaction = async (
   return await res.json();
 };
 
-export default function LikeButton({ artwork }: LikeButtonProps) {
-  const [liked, setLiked] = useState(false);
-  const [reactions, setReactions] = useState<Reactions>(
-    artwork.reactions ??
-      Object.fromEntries(REACTIONS.map((r) => [r, 0])) as Reactions,
-  );
-  const [reactionDetails, setReactionDetails] = useState<ReactionDetails>(
-    Object.fromEntries(
-      REACTIONS.map((r) => [r as Reaction, [] as GitHubUser["login"][]]),
-    ) as ReactionDetails,
-  );
+export default function LikeButton({ entry }: { entry: ArtworkEntry }) {
+  const user = useContext(UserContext);
+  const { artwork, reactions } = entry;
 
-  const handleReaction = (reaction: Reaction): void => {
-    setLiked(true);
-    postReaction(artwork, reaction).then((res) => {
-      if (reactionDetails[reaction] === undefined) {
-        reactionDetails[reaction] = [];
+  const reactionDetails = Object.entries(reactions ?? {}).reduce(
+    (acc, [idx, entry]) => {
+      const { reaction, user } = entry;
+      if (!acc[reaction as Reaction]) {
+        acc[reaction as Reaction] = [];
       }
 
-      reactionDetails[reaction] = [...reactionDetails[reaction], res.user];
-      setReactionDetails({ ...reactionDetails });
-    });
+      acc[reaction as Reaction].push(user);
+      return acc;
+    },
+    {} as ReactionDetails,
+  );
+
+  const allReactions = {
+    ...mapInitialReactions(),
+    ...reactionDetails,
   };
 
-  useEffect(() => {
-    getReactions(artwork).then((res) => {
-      setReactions({
-        ...reactions,
-        ...res.reactions,
-      });
+  const allReactionsLength = Object.keys(allReactions).length;
 
-      const details = Object.fromEntries(
-        res.details.map((detail) => [detail.reaction, [...[detail.user]]]),
-      ) as ReactionDetails;
-
-      setReactionDetails(details);
-    });
-  }, [liked]);
+  const handleReaction = (reaction: Reaction): void => {
+    if (!user || !artwork) {
+      return;
+    }
+    postReaction(artwork, reaction);
+  };
 
   return (
     <div class="flex items-center justify-between w-full divide-x border-gray-200">
-      {Object.entries(reactions).map(([reaction, count]) => (
-        <div class="flex-1 flex justify-center">
-          <button
-            class="group~btn flex(row nowrap) items-center text-sm border(blue-100) rounded-md px-2 bg(white hover:gray-100) hover:(bg(white)) py-2"
-            onClick={() => handleReaction(reaction as Reaction)}
-            disabled={liked}
-            title={(reactionDetails[reaction as Reaction] ?? []).join("\r\n") ??
-              `${count} ${reaction}s`}
+      {Object.entries(allReactions).map(([reaction, users], idx) => {
+        const count = users.length;
+        return (
+          <div
+            class={cx(
+              "group-btn flex-1 flex justify-center items-stretch",
+              count && "relative",
+              users.includes(user?.login ?? "")
+                ? "bg(gray-100 hover:(gray-200)) border-t border-t-gray-300 -mt-px"
+                : "bg(white hover:(gray-50))",
+            )}
           >
-            {reaction}
-            <span class="text(gray-800 xs) font(normal sans) ml-1 group~btn:hover(text-blue-900)">
-              {count}
-            </span>
-          </button>
-        </div>
-      ))}
+            <button
+              class={cx(
+                "flex(row nowrap) items-center p-2 text(base center) font(sans medium) w-full",
+                "siblings:(opacity-0 group-btn-hover:(opacity-100) transition-opacity duration-200 ease-out)",
+              )}
+              onClick={() => handleReaction(reaction as Reaction)}
+              type="button"
+            >
+              {reaction}
+
+              <span class="text(gray-800 xs group-btn-hover:(blue-500)) font(normal sans) ml-1">
+                {count}
+              </span>
+            </button>
+            {count > 0 && (
+              <UserList
+                class={cx(
+                  idx === 0 && "left-0 translate-x-1",
+                  idx === allReactionsLength - 1 && "right-0 -translate-x-1",
+                )}
+                {...{ users, user }}
+              />
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
