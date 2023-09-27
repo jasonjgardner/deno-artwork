@@ -15,3 +15,5 @@ export const DEFAULT_AVATARS = [
 ];
 
 export const REACTIONS: Reaction[] = ["👍", "❤️", "🦕", "🍕"];
+
+export const DEFAULT_REACTION = REACTIONS[0];

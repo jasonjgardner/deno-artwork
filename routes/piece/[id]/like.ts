@@ -1,12 +1,33 @@
-import { HandlerContext } from "$fresh/server.ts";
-import { getArtwork, getArtworkReactions, setReaction } from "🛠️/db.ts";
+import type { Handlers } from "$fresh/server.ts";
+import {
+  getArtwork,
+  getArtworkReactions,
+  removeReaction,
+  setReaction,
+} from "🛠️/db.ts";
 import { getAuthenticatedUser } from "🛠️/github.ts";
-import type { Artwork, Reaction } from "🛠️/types.ts";
-import { REACTIONS } from "🛠️/constants.ts";
+import type { Artwork, Reaction, ReactionResponse } from "🛠️/types.ts";
+import { DEFAULT_REACTION, REACTIONS } from "🛠️/constants.ts";
+
+async function getReactionFromRequest(req: Request): Promise<Reaction> {
+  if (req.headers.get("content-type")?.includes("application/json")) {
+    const { reaction } = await req.json();
+    return reaction;
+  }
+
+  const formData = await req.formData();
+  const reaction = formData.get("reaction");
+
+  if (reaction === null) {
+    return DEFAULT_REACTION;
+  }
+
+  return reaction as Reaction;
+}
 
 async function getReactionCount(
   artwork: Artwork,
-): Promise<Record<string, number>> {
+): Promise<Record<Reaction, number>> {
   const entries = await getArtworkReactions(artwork.id);
   const reactions: Record<string, number> = {};
 
@@ -21,17 +42,28 @@ async function getReactionCount(
   return reactions;
 }
 
-export const handler = async (
-  req: Request,
-  ctx: HandlerContext,
-): Promise<Response> => {
-  const { id } = ctx.params;
+async function deleteReaction(req: Request, id: string): Promise<Response> {
+  const { login } = await getAuthenticatedUser(req) ?? {};
 
-  if (id === undefined) {
-    return new Response("Missing artwork id", { status: 400 });
+  if (!login) {
+    return new Response("Not authenticated", { status: 401 });
   }
 
-  if (req.method === "GET") {
+  if (!id) {
+    return new Response("Invalid artwork", { status: 400 });
+  }
+
+  await removeReaction(id, login);
+
+  const res: Omit<ReactionResponse, "details"> = {
+    reactions: await getReactionCount(await getArtwork(id) as Artwork),
+  };
+
+  return new Response(JSON.stringify(res), { status: 200 });
+}
+
+export const handler: Handlers<ReactionResponse> = {
+  async GET(_req, { params: { id } }) {
     const artwork = await getArtwork(id) as Artwork;
 
     return new Response(
@@ -44,29 +76,43 @@ export const handler = async (
         status: 200,
       },
     );
-  }
+  },
+  async DELETE(req, { params: { id } }) {
+    return await deleteReaction(req, id);
+  },
+  async POST(req, { params: { id, _method } }) {
+    if (_method === "DELETE") {
+      return await deleteReaction(req, id);
+    }
 
-  if (req.method !== "POST") {
-    return new Response("Method not allowed", { status: 405 });
-  }
+    const reaction = await getReactionFromRequest(req);
 
-  const { reaction } = await req.json();
-  if (
-    !id || !REACTIONS.includes(reaction as Reaction)
-  ) {
-    return new Response("Invalid reaction", { status: 400 });
-  }
-  const artwork = await getArtwork(id) as Artwork;
-  const user = await getAuthenticatedUser(req);
+    if (
+      !id || !REACTIONS.includes(reaction)
+    ) {
+      return new Response("Invalid reaction", { status: 400 });
+    }
 
-  if (user?.login !== undefined) {
-    setReaction(artwork.id, user.login, (reaction ?? "👍") as Reaction);
-  }
+    const artwork = await getArtwork(id) as Artwork;
+    const user = await getAuthenticatedUser(req);
 
-  const reactions = await getArtworkReactions(artwork.id);
+    if (user?.login !== undefined) {
+      setReaction(artwork.id, user.login, reaction);
+    }
 
-  return new Response(JSON.stringify({ reactions }), {
-    headers: { "content-type": "application/json" },
-    status: 200,
-  });
+    const reactions = await getArtworkReactions(artwork.id);
+
+    if (req.headers.get("accept")?.includes("text/html")) {
+      return new Response(null, {
+        headers: {
+          location: `/piece/${artwork.id}`,
+        },
+        status: 302,
+      });
+    }
+    return new Response(JSON.stringify({ reactions }), {
+      headers: { "content-type": "application/json" },
+      status: 200,
+    });
+  },
 };

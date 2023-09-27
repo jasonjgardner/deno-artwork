@@ -1,12 +1,13 @@
 import { useContext } from "preact/hooks";
 import { slug } from "slug/mod.ts";
-import LikeButton from "🏝️/LikeButton.tsx";
+import ReactionButton from "🏝️/ReactionButton.tsx";
 import { UserContext } from "🛠️/user.ts";
 import type { ArtworkEntry } from "🛠️/types.ts";
 
-export default function Item({ entry }: { entry: ArtworkEntry }) {
+export default function ArtworkItem({ entry }: { entry: ArtworkEntry }) {
   const user = useContext(UserContext);
   const { artwork } = entry;
+  const year = new Date(artwork.date).getFullYear();
 
   return (
     <article class="flex justify-start items-start group">
@@ -53,13 +54,13 @@ export default function Item({ entry }: { entry: ArtworkEntry }) {
               {artwork.artist.name}
             </a>
             <time class="text(gray-500 xs) select-none ml-1 font-normal">
-              {/* ({artwork.date.getFullYear()}) */}
+              ({year})
             </time>
           </p>
         </div>
 
         <div class="relative flex items-center justify-between mt-2.5 border(gray-100 t group-hover:gray-300) transition-colors ease-out duration-200">
-          <LikeButton {...{ entry }} />
+          <ReactionButton {...{ entry }} />
           {user === null && (
             <a
               href="/oauth/signin"

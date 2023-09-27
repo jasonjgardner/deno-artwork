@@ -51,8 +51,18 @@ export async function setReaction(
 export async function removeReaction(
   artworkId: Artwork["id"],
   user: GitHubUser["login"],
+  reaction?: Reaction,
 ) {
-  await kv.delete(["reaction", artworkId, user]);
+  const key = ["reaction", artworkId, user];
+
+  if (
+    reaction !== undefined &&
+    ((await kv.get<Reaction>(key)).value === reaction)
+  ) {
+    return;
+  }
+
+  await kv.delete(key);
 }
 
 export async function getArtworkReactions(

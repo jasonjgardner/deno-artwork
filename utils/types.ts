@@ -42,3 +42,13 @@ export interface ArtworkEntry {
   artwork: Artwork;
   reactions: ReactionEntry[];
 }
+
+export interface ArtworkResponse {
+  artwork: Artwork;
+  reactions: Reactions;
+}
+
+export interface ReactionResponse {
+  details: ReactionDetails;
+  reactions: Reactions;
+}
