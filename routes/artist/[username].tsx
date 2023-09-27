@@ -79,7 +79,7 @@ export default function Artist({ data }: PageProps<Data | null>) {
   }
 
   const metaDescription = writeMetaDescription(artist, artworks);
-  const shareUrl = new URL(`/artist/${artist.github}`, import.meta.url);
+  const shareUrl = new URL(`/artist/${artist.id}`, import.meta.url);
 
   return (
     <>

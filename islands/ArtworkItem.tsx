@@ -44,11 +44,10 @@ export default function ArtworkItem({ entry }: { entry: ArtworkEntry }) {
           <p class="text(gray-600 sm) font-semibold leading-relaxed px-4">
             By{" "}
             <a
-              href={`/artist/${
-                (artwork.artist.github ?? slug(artwork.artist.name, {
+              href={`/artist/${(artwork.artist.id ?? artwork.artist.github ??
+                slug(artwork.artist.name, {
                   lower: true,
-                })).replace(/^#/, "")
-              }`}
+                }))}`}
               class="text-underline hover:no-underline"
             >
               {artwork.artist.name}

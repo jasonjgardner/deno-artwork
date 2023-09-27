@@ -6,6 +6,7 @@ export interface GitHubUser {
 }
 
 export interface Artist {
+  id: string;
   name: string;
   github: GitHubUser["login"];
   profile_image?: string;

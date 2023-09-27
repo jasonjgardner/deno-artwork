@@ -1,22 +1,23 @@
-#!/usr/bin/env -S deno run -A --unstable --location https://artworks.deno.dev
-import artworkData from "../data/artwork.json" assert { type: "json" };
-import type { Artwork } from "../utils/types.ts";
-import { slug } from "slug/mod.ts";
-import { deleteArtwork, loadSavedArtwork, saveArtwork } from "🛠️/db.ts";
+#!/usr/bin/env -S deno run -A --unstable
 import { parse } from "$std/flags/mod.ts";
+import artworkData from "💽/artwork.json" assert { type: "json" };
+import type { Artwork } from "🛠️/types.ts";
+import { deleteArtwork, loadSavedArtwork, saveArtwork } from "🛠️/db.ts";
+import { slug } from "slug/mod.ts";
 
 const { clear } = parse(Deno.args, { boolean: ["clear"] });
 
 export function loadStaticArtwork(): Artwork[] {
   // Get images from /static directory
   const artworks: Artwork[] = artworkData.map((a) => ({
-    id: slug(`${a.title} ${a.artist.github}`, {
+    id: slug(`${a.title} ${a.artist.id}`, {
       lower: true,
     }),
     ...a,
     artist: {
       ...a.artist,
-      github: a.artist.github ?? `#${slug(a.artist.name, { lower: true })}`,
+      id: a.artist.id ?? a.artist.github ??
+        slug(a.artist.name, { lower: true }),
     },
     date: new Date(a.date),
   }));

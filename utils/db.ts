@@ -131,7 +131,7 @@ export async function loadSavedArtwork(): Promise<Artwork[]> {
 }
 
 export function deleteArtwork({ id, artist }: Artwork) {
-  kv.delete(["artist", artist.github, id]);
+  kv.delete(["artist", artist.id, id]);
   kv.delete(["artwork", id]);
 }
 
@@ -155,7 +155,8 @@ export async function getArtwork(
 export async function saveArtwork(artwork: Artwork): Promise<string[]> {
   const key = [
     "artist",
-    artwork.artist.github ?? slug(artwork.artist.name, { lower: true }),
+    artwork.artist.id ?? artwork.artist.github ??
+      slug(artwork.artist.name, { lower: true }),
     artwork.id,
   ];
 
@@ -182,7 +183,7 @@ export async function saveArtwork(artwork: Artwork): Promise<string[]> {
 }
 
 export async function getArtworkByArtist(
-  artist: Artwork["artist"]["github"],
+  artist: Artwork["artist"]["id"],
 ): Promise<Artwork[]> {
   return await kvArray<Artwork>({ prefix: ["artist", artist] });
 }
