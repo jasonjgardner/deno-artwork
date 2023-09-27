@@ -5,6 +5,7 @@
     "title": "Disco Deno",
     "alt": "Disco Deno",
     "artist": {
+      "id": "sujanchhetri",
       "name": "Sujan Chhetri",
       "profile_image": "https://avatars1.githubusercontent.com/u/44917558",
       "github": "sujanchhetri"
@@ -17,6 +18,7 @@
     "title": "Deno Sun",
     "alt": "Deno Sun",
     "artist": {
+      "id": "timreichen",
       "name": "timreichen",
       "profile_image": "https://avatars2.githubusercontent.com/u/14932257",
       "github": "timreichen"
@@ -29,6 +31,7 @@
     "title": "Deno Matrix",
     "alt": "a deno logo with The Matrix theme",
     "artist": {
+      "id": "bramaudi",
       "name": "bramaudi",
       "profile_image": "https://avatars1.githubusercontent.com/u/14371119",
       "github": "bramaudi"
@@ -41,6 +44,7 @@
     "title": "Deno 1.0",
     "alt": "a gloomy scene with a white dinosaur standing in the rain on a purple planet",
     "artist": {
+      "id": "hashrock",
       "name": "hashrock",
       "profile_image": "https://avatars0.githubusercontent.com/u/3132889",
       "twitter": "hashedrock",
@@ -55,6 +59,7 @@
     "title": "Congrats on Deno 1.0",
     "alt": "a drawing with two large deno mascots in the front and smaller ones behind, standing on brown ground in front of a blue sky. above them text reads: deno 1.0 congrats!",
     "artist": {
+      "id": "hashrock",
       "name": "hashrock",
       "profile_image": "https://avatars0.githubusercontent.com/u/3132889",
       "twitter": "hashedrock",
@@ -69,6 +74,7 @@
     "title": "An animated Deno logo",
     "alt": "a animated deno logo",
     "artist": {
+      "id": "hashrock",
       "name": "hashrock",
       "profile_image": "https://avatars0.githubusercontent.com/u/3132889",
       "twitter": "hashedrock",
@@ -83,6 +89,7 @@
     "title": "Colorful Deno logo",
     "alt": "light blue, light green simple logo",
     "artist": {
+      "id": "hashrock",
       "name": "hashrock",
       "profile_image": "https://avatars0.githubusercontent.com/u/3132889",
       "twitter": "hashedrock",
@@ -97,6 +104,7 @@
     "title": "Deno in the City",
     "alt": "the deno mascot standing between a some tall lit up buildings at night",
     "artist": {
+      "id": "masbagal",
       "name": "Dimitrij Agal",
       "profile_image": "https://unavatar.io/twitter/masbagal",
       "twitter": "masbagal",
@@ -111,6 +119,7 @@
     "title": "The Original",
     "alt": "a hand drawn deno logo",
     "artist": {
+      "id": "ry",
       "name": "ry",
       "profile_image": "https://avatars3.githubusercontent.com/u/80",
       "github": "ry",
@@ -124,6 +133,7 @@
     "title": "High-res Deno logo",
     "alt": "a high resolution deno logo",
     "artist": {
+      "id": "kevinkassimo",
       "name": "kevinkassimo",
       "profile_image": "https://avatars2.githubusercontent.com/u/15007517",
       "github": "kevinkassimo",
@@ -137,6 +147,8 @@
     "title": "Tattoo design",
     "alt": "a deno logo as a tattoo design",
     "artist": {
+      "id": "duri4n",
+      "github": "#duri4n",
       "name": "duri4n",
       "instagram": "duri4n"
     },
@@ -148,7 +160,9 @@
     "title": "Stone Deno",
     "alt": "the classic deno logo, hand painted onto a circular gray rock",
     "artist": {
+      "id": "shannonlienhart",
       "name": "Shannon Lienhart",
+      "github": "#shannonlienhart",
       "profile_image": "https://unavatar.io/twitter/shannonlienhart",
       "twitter": "shannonlienhart"
     },
@@ -161,6 +175,7 @@
     "alt": "a animated, green 3D deno mascot standing in the rain",
     "link": "https://github.com/MasterJames/high-res-deno-logo",
     "artist": {
+      "id": "MasterJames",
       "name": "Master James",
       "profile_image": "https://avatars1.githubusercontent.com/u/1840183",
       "github": "MasterJames"
@@ -174,6 +189,7 @@
     "alt": "an animated deno logo in 8-bit style",
     "link": "https://twitter.com/_tanakaworld/status/1117419541393358848",
     "artist": {
+      "id": "tanakaworld",
       "name": "tanakaworld",
       "github": "tanakaworld",
       "profile_image": "https://unavatar.io/twitter/_tanakaworld",
@@ -188,6 +204,7 @@
     "alt": "Deno logo glitching while trying to access Multi-verse",
     "link": "https://twitter.com/SamipPoudel3",
     "artist": {
+      "id": "SamipPoudel58",
       "name": "Samip Poudel",
       "profile_image": "https://avatars1.githubusercontent.com/u/59493809",
       "github": "SamipPoudel58",
@@ -202,6 +219,7 @@
     "title": "Jurassic Deno",
     "alt": "jurassic park themed deno logo in red, yellow, and black",
     "artist": {
+      "id": "SamipPoudel58",
       "name": "Samip Poudel",
       "profile_image": "https://avatars1.githubusercontent.com/u/59493809",
       "github": "SamipPoudel58",
@@ -216,6 +234,7 @@
     "title": "Rick Deno",
     "alt": "deno in the eyes of Rick from Rick&Morty",
     "artist": {
+      "id": "Loockeeer",
       "name": "Loockeeer",
       "profile_image": "https://avatars2.githubusercontent.com/u/34001773",
       "github": "loockeeer"
@@ -228,6 +247,7 @@
     "title": "Deno Web Sock(pupp)ets",
     "alt": "A silly logo for Web Socket purposes",
     "artist": {
+      "id": "differentsmoke",
       "name": "Pablo Barría Urenda",
       "profile_image": "https://avatars.githubusercontent.com/u/26347195",
       "github": "differentsmoke",
@@ -241,6 +261,7 @@
     "title": "Space Deno",
     "alt": "Space Deno",
     "artist": {
+      "id": "pultzlucas",
       "name": "pultzlucas",
       "profile_image": "https://avatars.githubusercontent.com/u/70097798",
       "github": "pultzlucas"
@@ -253,6 +274,7 @@
     "title": "Pride Deno",
     "alt": "A GIF of the Deno seen on the Documentation Page except it cycles through LGBTQ+ Flags.",
     "artist": {
+      "id": "LePichu",
       "name": "Ishat Gupta",
       "profile_image": "https://avatars.githubusercontent.com/u/62379502",
       "github": "LePichu"
@@ -265,6 +287,7 @@
     "title": "Deno Simpson",
     "alt": "Deno Simpson",
     "artist": {
+      "id": "SamipPoudel58",
       "name": "Samip Poudel",
       "profile_image": "https://avatars1.githubusercontent.com/u/59493809",
       "github": "SamipPoudel58",
@@ -279,6 +302,7 @@
     "title": "Deno reading deno.news",
     "alt": "Deno reading deno.news",
     "artist": {
+      "id": "dcdunkan",
       "name": "Dunkan",
       "profile_image": "https://avatars.githubusercontent.com/u/70066170",
       "github": "dcdunkan",
@@ -292,6 +316,7 @@
     "title": "Snow Den",
     "alt": "Deno sitting in a snow den",
     "artist": {
+      "id": "Arc-blroth",
       "name": "Arc'blroth",
       "profile_image": "https://avatars.githubusercontent.com/u/45273859",
       "github": "Arc-blroth"
@@ -304,6 +329,7 @@
     "title": "Saudi Deno",
     "alt": "Deno with ghutrah (غُترَة).",
     "artist": {
+      "id": "x7md",
       "name": "Hamad Binqali",
       "profile_image": "https://avatars.githubusercontent.com/u/54203033?v=4",
       "github": "x7md",
@@ -318,6 +344,7 @@
     "title": "Deno in Minecraft",
     "alt": "Colorful Deno logo made in Minecraft",
     "artist": {
+      "id": "jasonjgardner",
       "name": "Jason J. Gardner",
       "profile_image": "https://avatars.githubusercontent.com/u/1903667",
       "github": "jasonjgardner",
@@ -333,6 +360,7 @@
     "title": "Kawaii Deno in VR",
     "alt": "Deno is kawaii with Usasaki-san",
     "artist": {
+      "id": "neverclear86",
       "name": "Lina Tsukusu",
       "profile_image": "https://avatars.githubusercontent.com/u/45692394",
       "github": "neverclear86",
@@ -347,6 +375,7 @@
     "title": "OG Deno",
     "alt": "OG Deno from the GamDeno Cyber",
     "artist": {
+      "id": "GeauxWeisbeck4",
       "name": "Andrew Weisbeck",
       "profile_image": "https://avatars.githubusercontent.com/u/87398426",
       "github": "GeauxWeisbeck4",
@@ -361,6 +390,7 @@
     "title": "Hypno Deno",
     "alt": "Hypnotic, spiraling Deno logo animation",
     "artist": {
+      "id": "jasonjgardner",
       "name": "Jason J. Gardner",
       "profile_image": "https://avatars.githubusercontent.com/u/1903667",
       "github": "jasonjgardner",
@@ -376,6 +406,7 @@
     "title": "Deno in Acrylic",
     "alt": "A green Deno on a black background in acrylic paint.",
     "artist": {
+      "id": "DigitalDesignDj",
       "name": "Taylor Young",
       "profile_image": "https://avatars.githubusercontent.com/u/539320",
       "github": "DigitalDesignDj",

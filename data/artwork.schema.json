@@ -71,6 +71,9 @@
                         "https"
                     ]
                 },
+                "id": {
+                    "type": "string"
+                },
                 "github": {
                     "type": "string"
                 },
@@ -81,6 +84,9 @@
                     "type": "string"
                 },
                 "web": {
+                    "type": "string"
+                },
+                "location": {
                     "type": "string"
                 }
             },
