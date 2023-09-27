@@ -31,15 +31,14 @@ export const handler: Handlers<ArtworkPageProps | null> = {
 export default function Artwork(
   { params, data }: PageProps<ArtworkPageProps | null>,
 ) {
-  const { image, artist, title, alt, license, id, link, date, shareUrl } =
-    data ?? {
-      shareUrl: new URL(`/piece/${params.id}`),
-    };
+  const { image, artist, title, alt, license, link, date, shareUrl } = data ?? {
+    shareUrl: new URL(`/piece/${params.id}`, import.meta.url),
+  };
 
   return (
     <>
       <Head>
-        <title>{title ?? "🎨"} | Deno Artwork</title>
+        <title>{title ?? "🎨"} - Deno Artwork</title>
         <meta name="description" content={alt ?? title} />
         <meta property="og:title" content={title ?? "Deno Artwork"} />
         <meta property="og:description" content={alt ?? title} />
