@@ -1,36 +1,41 @@
+import { useContext } from "preact/hooks";
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { BrowserIcon, GitHubIcon, InstagramIcon, XIcon } from "📦/icon/mod.ts";
-import type { Artist as IArtist, Artwork } from "🛠️/types.ts";
-import { DEFAULT_AVATAR } from "🛠️/constants.ts";
-import { getArtworkByArtist } from "🛠️/db.ts";
-import Item from "📦/Item.tsx";
+import type { Artist as IArtist, ArtworkEntry } from "🛠️/types.ts";
+import { getArtworkByArtist, sortByReactionCount } from "🛠️/db.ts";
+import { UserContext } from "🛠️/user.ts";
+import { getRandomAvatar } from "🛠️/mod.ts";
+import Gallery from "🏝️/Gallery.tsx";
 
 interface Data {
   artist: IArtist;
-  artworks: Artwork[];
+  artworks: ArtworkEntry[];
 }
 
 export const handler: Handlers<Data | null> = {
-  async GET(req, ctx) {
+  async GET(_req, ctx) {
     const { username } = ctx.params;
     if (!username) {
-      return ctx.render(null);
+      return ctx.renderNotFound();
     }
 
-    const artworks = await getArtworkByArtist(username);
+    const artworks = await sortByReactionCount(
+      await getArtworkByArtist(username),
+    );
 
     if (artworks.length === 0) {
-      return ctx.render(null);
+      return ctx.renderNotFound();
     }
 
     return ctx.render({
-      artist: artworks[0].artist,
+      artist: artworks[0].artwork.artist,
       artworks,
     });
   },
 };
 
-export default function Artist({ params, data }: PageProps<Data | null>) {
+export default function Artist({ data }: PageProps<Data | null>) {
+  const user = useContext(UserContext);
   const { artist, artworks } = data ?? { artist: null, artworks: [] };
 
   if (!artist) {
@@ -44,12 +49,12 @@ export default function Artist({ params, data }: PageProps<Data | null>) {
   }
 
   return (
-    <div class="p-2">
+    <div class="container p-2 mx-auto flex flex-col gap-y-4">
       <div class="flex justify-start items-start">
         <img
-          src={artist?.profile_image ?? DEFAULT_AVATAR}
+          src={artist?.profile_image ?? getRandomAvatar()}
           alt={artist.name}
-          class="rounded-md w-24 h-24 border border(gray-500 opacity-50) shadow-sm"
+          class="rounded-md w-24 h-24 border(gray-500 opacity-50) shadow-sm"
           height="32"
           width="32"
         />
@@ -114,13 +119,8 @@ export default function Artist({ params, data }: PageProps<Data | null>) {
           </nav>
         </div>
       </div>
-      <div class="grid">
-        {data?.artworks.map((artwork, idx) => (
-          <Item
-            key={idx}
-            artwork={artwork}
-          />
-        ))}
+      <div class="w-full grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 place-items-center">
+        <Gallery {...{ user, artworks }} />
       </div>
     </div>
   );
