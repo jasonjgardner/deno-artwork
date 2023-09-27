@@ -1,36 +1,41 @@
+import { useContext } from "preact/hooks";
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { BrowserIcon, GitHubIcon, InstagramIcon, XIcon } from "📦/icon/mod.ts";
-import type { Artist as IArtist, Artwork } from "🛠️/types.ts";
-import { getArtworkByArtist } from "🛠️/db.ts";
+import type { Artist as IArtist, ArtworkEntry } from "🛠️/types.ts";
+import { getArtworkByArtist, sortByReactionCount } from "🛠️/db.ts";
+import { UserContext } from "🛠️/user.ts";
 import { getRandomAvatar } from "🛠️/mod.ts";
-import Item from "📦/Item.tsx";
+import Gallery from "🏝️/Gallery.tsx";
 
 interface Data {
   artist: IArtist;
-  artworks: Artwork[];
+  artworks: ArtworkEntry[];
 }
 
 export const handler: Handlers<Data | null> = {
-  async GET(req, ctx) {
+  async GET(_req, ctx) {
     const { username } = ctx.params;
     if (!username) {
-      return ctx.render(null);
+      return ctx.renderNotFound();
     }
 
-    const artworks = await getArtworkByArtist(username);
+    const artworks = await sortByReactionCount(
+      await getArtworkByArtist(username),
+    );
 
     if (artworks.length === 0) {
-      return ctx.render(null);
+      return ctx.renderNotFound();
     }
 
     return ctx.render({
-      artist: artworks[0].artist,
+      artist: artworks[0].artwork.artist,
       artworks,
     });
   },
 };
 
-export default function Artist({ params, data }: PageProps<Data | null>) {
+export default function Artist({ data }: PageProps<Data | null>) {
+  const user = useContext(UserContext);
   const { artist, artworks } = data ?? { artist: null, artworks: [] };
 
   if (!artist) {
@@ -115,12 +120,7 @@ export default function Artist({ params, data }: PageProps<Data | null>) {
         </div>
       </div>
       <div class="w-full grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 place-items-center">
-        {data?.artworks.map((artwork) => (
-          <Item
-            key={artwork.id}
-            artwork={artwork}
-          />
-        ))}
+        <Gallery {...{ user, artworks }} />
       </div>
     </div>
   );
