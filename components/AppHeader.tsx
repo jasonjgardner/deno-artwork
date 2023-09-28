@@ -1,4 +1,3 @@
-import StarButton from "📦/StarButton.tsx";
 import LoginButton from "📦/LoginButton.tsx";
 
 export interface AppHeaderProps {
@@ -14,7 +13,7 @@ export default function AppHeader({ isHome }: AppHeaderProps) {
             ? "🎨 Deno Artwork"
             : <a href="/" title="Return to gallery">{"← Deno Artwork"}</a>}
         </h1>
-        <StarButton />
+
         <LoginButton />
       </div>
     </header>
