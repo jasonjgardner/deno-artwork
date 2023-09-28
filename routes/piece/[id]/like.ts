@@ -97,7 +97,7 @@ export const handler: Handlers<ReactionResponse> = {
     const user = await getAuthenticatedUser(req);
 
     if (user?.login !== undefined) {
-      setReaction(artwork.id, user.login, reaction);
+      await setReaction(artwork.id, user.login, reaction);
     }
 
     const reactions = await getArtworkReactions(artwork.id);

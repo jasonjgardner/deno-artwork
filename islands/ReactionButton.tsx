@@ -177,16 +177,12 @@ export default function ReactionButton(
     userLiked.value = reaction;
 
     postReaction(artwork, reaction).then((res) => {
-      // Add user to list of reactions
-      allReactions.value[reaction] = [
-        ...allReactions.value[reaction],
-        user?.login ?? "",
-      ];
-
-      entries.value = Object.entries({
+      allReactions.value = {
         ...allReactions.value,
         ...buildReactionDetails(res.reactions),
-      }) as ReactionEntryList;
+      };
+
+      entries.value = Object.entries(allReactions.value) as ReactionEntryList;
     }).catch((err) => {
       setErrorMessage(err.message);
     });
