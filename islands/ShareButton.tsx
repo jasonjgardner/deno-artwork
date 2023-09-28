@@ -20,14 +20,15 @@ export default function ShareButton({ title, text, url }: ShareButtonProps) {
   };
 
   return (
-    <div class="flex items-center justify-start gap-2 ml-1.5">
+    <div class="flex items-center justify-end px-2 gap-2 w-full">
       <button
-        class="flex items-center justify-center bg(white hover:gray-100) hover:(bg(white))"
+        class="flex items-center justify-between gap-2 text(md gray-700) font(sans semibold) bg(white hover:gray-100) hover:(bg(white) text(gray-900 underline)) select-none"
         title="Share"
         onClick={handleShare}
         disabled={!navigator.share}
       >
         <IconShare />
+        Share
       </button>
       {shared && <IconCheck />}
     </div>

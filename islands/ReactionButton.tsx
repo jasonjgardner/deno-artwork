@@ -18,6 +18,12 @@ import { buildReactionDetails, mapInitialReactions } from "🛠️/mod.ts";
 import UserList from "🏝️/UserList.tsx";
 import { IS_BROWSER } from "$fresh/runtime.ts";
 
+interface ReactionButtonProps {
+  entry: ArtworkEntry;
+  showUsers?: boolean;
+  user: GitHubUser | null;
+}
+
 type ReactionEntryList = Array<
   [Reaction, GitHubUser["login"][]]
 >;
@@ -94,9 +100,9 @@ const postReaction = async (
  * Form component for posting reactions to a piece of artwork
  * @returns Social reaction buttons
  */
-export default function ReactionButton({ entry }: { entry: ArtworkEntry }) {
-  const user = useContext(UserContext);
-
+export default function ReactionButton(
+  { entry, showUsers, user }: ReactionButtonProps,
+) {
   const { artwork, reactions } = entry;
 
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -196,8 +202,9 @@ export default function ReactionButton({ entry }: { entry: ArtworkEntry }) {
       <form
         class="flex items-center justify-between w-full divide-x border-gray-200"
         action={`/piece/${artwork.id}/like`}
-        method="POST"
+        method="post"
         onChange={(e) =>
+          IS_BROWSER &&
           handleReaction((e.target as HTMLInputElement).value as Reaction)}
       >
         {entries.value.map(([reaction, users], idx) => {
@@ -206,7 +213,7 @@ export default function ReactionButton({ entry }: { entry: ArtworkEntry }) {
             <div
               key={reaction}
               class={cx(
-                "group-btn flex-1 flex justify-center items-stretch",
+                "group-btn flex-1 flex justify-center items-stretch px-1",
                 count && "relative",
                 users.includes(user?.login ?? "")
                   ? "bg(gray-100 hover:(gray-200)) border-t border-t-gray-300 -mt-px"
@@ -215,11 +222,12 @@ export default function ReactionButton({ entry }: { entry: ArtworkEntry }) {
             >
               <label
                 class={cx(
-                  "cursor-pointer",
+                  "cursor-pointer select-none",
                   "disabled:(opacity-75 cursor-default)",
                   "flex(row nowrap) items-stretch justify-between text(base center) font(sans medium) w-full whitespace-nowrap",
                   // Style user list
-                  "siblings:(opacity-0 group-btn-hover:(opacity-100 -translate-y-1) translate-y-full transition-[opacity,transform] delay-100 duration-200 ease-out)",
+                  showUsers &&
+                    "siblings:(opacity-0 group-btn-hover:(opacity-100 -translate-y-1) translate-y-full transition-[opacity,transform] delay-100 duration-200 ease-out)",
                 )}
                 disabled={!user}
               >
@@ -237,7 +245,7 @@ export default function ReactionButton({ entry }: { entry: ArtworkEntry }) {
                   </span>
                 </span>
               </label>
-              {count > 0 && (
+              {showUsers && count > 0 && (
                 <UserList
                   class={cx(
                     idx === 0 && "left-0 translate-x-1",

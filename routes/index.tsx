@@ -1,7 +1,7 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { asset, Head } from "$fresh/runtime.ts";
 import type { Artwork, ArtworkEntry, GitHubUser } from "🛠️/types.ts";
-import { getArtwork, getArtworkEntries, sortByReactionCount } from "🛠️/db.ts";
+import { getArtwork, sortByReactionCount } from "🛠️/db.ts";
 import { getAuthenticatedUser } from "🛠️/github.ts";
 import Gallery from "🏝️/Gallery.tsx";
 
@@ -12,21 +12,12 @@ interface HomeProps {
 
 export const handler: Handlers<HomeProps> = {
   async GET(req, ctx) {
-    const user = await getAuthenticatedUser(req);
-    const url = new URL(req.url);
-    const { searchParams } = url;
-    const { sort } = Object.fromEntries(searchParams.entries());
-
-    const res = {
-      user,
+    const res: HomeProps = {
+      user: await getAuthenticatedUser(req),
       artworks: [] as ArtworkEntry[],
     };
 
-    if (!sort) {
-      res.artworks = await getArtworkEntries();
-      return ctx.render(res);
-    }
-
+    // Default sort is by reaction count
     res.artworks = await sortByReactionCount(await getArtwork() as Artwork[]);
 
     return ctx.render(res);
@@ -73,21 +64,27 @@ export default function Home({ data }: PageProps<HomeProps | null>) {
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Deno Artwork" />
         <meta name="twitter:card" content="summary_large_image" />
+        <link
+          href="/feed"
+          rel="alternate"
+          type="application/rss+xml"
+          title="Deno Artwork gallery feed"
+        />
       </Head>
       <main class="bg-gray-200 px-2 py-2 pb-6">
         <div class="container mx-auto">
-          <h2 class="text(xl gray-800) font(sans medium) leading-loose mt-4">
+          <h2 class="text(xl gray-800 center md:left) font(sans medium) leading-loose mt-4">
             Do you have a piece to display here?{" "}
             <a
               href="https://github.com/jasonjgardner/deno-artwork/edit/main/data/artwork.json"
-              class="text(blue-500 underline hover:(no-underline))"
+              class="text(blue-500 underline hover:(no-underline blue-600))"
               target="_blank"
               rel="noopener noreferrer"
             >
               Add it!
             </a>
           </h2>
-          <div class="gap-6 grid md:grid-cols-2 2xl:grid-cols-4 place-items-center mt-6">
+          <div class="gap-6 grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 place-items-center mt-6">
             <Gallery artworks={data.artworks} user={data.user} />
           </div>
         </div>
