@@ -17,3 +17,6 @@ export const DEFAULT_AVATARS = [
 export const REACTIONS: Reaction[] = ["👍", "❤️", "🦕", "🍕"];
 
 export const DEFAULT_REACTION = REACTIONS[0];
+
+export const REPO_URL = Deno.env.get("REPO_URL") ??
+  "https://github.com/jasonjgardner/deno-artwork";

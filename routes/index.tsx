@@ -76,11 +76,11 @@ export default function Home({ data }: PageProps<HomeProps | null>) {
       </Head>
       <main class="bg-gray-200 px-2 py-2 pb-6">
         <div class="container mx-auto">
-          <h2 class="text(xl gray-800) font(sans medium) leading-loose mt-4">
+          <h2 class="text(xl gray-800 center md:left) font(sans medium) leading-loose mt-4">
             Do you have a piece to display here?{" "}
             <a
               href="https://github.com/jasonjgardner/deno-artwork/edit/main/data/artwork.json"
-              class="text(blue-500 underline hover:(no-underline))"
+              class="text(blue-500 underline hover:(no-underline blue-600))"
               target="_blank"
               rel="noopener noreferrer"
             >

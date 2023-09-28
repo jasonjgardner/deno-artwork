@@ -1,5 +1,4 @@
 import { useContext } from "preact/hooks";
-import type { GitHubUser } from "🛠️/types.ts";
 import { isAdmin, UserContext } from "🛠️/user.ts";
 
 export default function LoginButton() {
@@ -11,7 +10,7 @@ export default function LoginButton() {
     return (
       <a
         href="/oauth/signin"
-        class="text(white opacity-90 sm) font(medium)"
+        class="text(white opacity-90 sm) font(sans medium)"
       >
         Sign in with GitHub
       </a>
@@ -29,6 +28,15 @@ export default function LoginButton() {
         title={`Logged in as "${user?.login}"`}
       />
       <div class="flex flex-col items-start justify-between h-full w-32 mt-auto">
+        {userIsAdmin && (
+          <a
+            href="/admin"
+            class="text(gray-300 md) font(sans normal) leading-tight"
+            title="Access admin panel"
+          >
+            👑
+          </a>
+        )}
         <p class="font(sans semibold) text(gray-100 sm) truncate leading-tight">
           {user.name}
         </p>
