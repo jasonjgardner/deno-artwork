@@ -1,4 +1,5 @@
 #!/usr/bin/env -S deno run -A --unstable
+import "$std/dotenv/load.ts";
 import { parse } from "$std/flags/mod.ts";
 import artworkData from "💽/artwork.json" assert { type: "json" };
 import type { Artwork } from "🛠️/types.ts";
@@ -27,15 +28,15 @@ export function loadStaticArtwork(): Artwork[] {
 
 export async function deleteSavedArtwork() {
   const savedArtwork = await loadSavedArtwork();
-  savedArtwork.forEach((art) => {
+  savedArtwork.forEach(async (art) => {
     console.log("Deleting %c%s", "color: red", art.id);
-    deleteArtwork(art);
+    await deleteArtwork(art);
   });
 }
 
-export function saveStaticArtwork() {
+export async function saveStaticArtwork() {
   const artwork = loadStaticArtwork();
-  artwork.forEach(async (art) => {
+  await Promise.all(artwork.map(async (art) => {
     console.log("Saving %c%s", "color: cyan", art.id);
     try {
       const key = await saveArtwork(art);
@@ -43,17 +44,22 @@ export function saveStaticArtwork() {
     } catch (err) {
       console.error(`Failed saving ${art.id}: %s`, err);
     }
-  });
+  }));
 }
 
 export async function main(clearExisting = false) {
   if (clearExisting) {
     console.log("%cClearing existing artwork...", "color: orange");
-    await deleteSavedArtwork();
+    try {
+      await deleteSavedArtwork();
+      console.log("%cExisting artwork cleared.", "color: green");
+    } catch (err) {
+      console.error("Failed to clear existing artwork: %s", err);
+    }
   }
 
   console.log("%cSaving static artwork to KV database...", "color: green");
-  saveStaticArtwork();
+  await saveStaticArtwork();
 }
 
 if (import.meta.main) {

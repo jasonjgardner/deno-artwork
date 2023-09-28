@@ -130,9 +130,13 @@ export async function loadSavedArtwork(): Promise<Artwork[]> {
   return await kvArray({ prefix: ["artist"] });
 }
 
-export function deleteArtwork({ id, artist }: Artwork) {
-  kv.delete(["artist", artist.id, id]);
-  kv.delete(["artwork", id]);
+export async function deleteArtwork({ id, artist }: Artwork) {
+  try {
+    await kv.delete(["artist", artist.id ?? artist.github, id]);
+    await kv.delete(["artwork", id]);
+  } catch (err) {
+    console.error(`Failed to delete artwork ${id}: %s`, err);
+  }
 }
 
 export async function getArtwork(
