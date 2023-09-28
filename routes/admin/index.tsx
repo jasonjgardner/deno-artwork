@@ -41,10 +41,12 @@ export const handler: Handlers<AdminProps> = {
     if (!user || !isAdmin(user.login)) {
       return ctx.renderNotFound();
     }
-
+    const url = new URL(req.url);
+    const { searchParams } = url;
+    const { clear } = Object.fromEntries(searchParams.entries());
     const lastLogin = await logUserSignIn(user);
 
-    await storeStaticArtwork();
+    await storeStaticArtwork(clear === "on");
     return ctx.render({
       user: user.login,
       lastLogin: new Date(lastLogin ?? Date.now()),
@@ -74,6 +76,15 @@ export default function Admin({
         >
           Save static artwork
         </button>
+        <label class="flex items-center justify-start ml-4">
+          <input
+            class="mr-2"
+            type="checkbox"
+            name="clear"
+            value="on"
+          />
+          Clear existing artwork
+        </label>
       </form>
 
       <h2 class="font(sans bold) text(xl gray-900) leading-relaxed mt-4 pb-2">
