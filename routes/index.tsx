@@ -79,8 +79,10 @@ export default function Home({ data }: PageProps<HomeProps | null>) {
           <h2 class="text(xl gray-800) font(sans medium) leading-loose mt-4">
             Do you have a piece to display here?{" "}
             <a
-              href="/piece/submit"
+              href="https://github.com/jasonjgardner/deno-artwork/edit/main/data/artwork.json"
               class="text(blue-500 underline hover:(no-underline))"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Add it!
             </a>
