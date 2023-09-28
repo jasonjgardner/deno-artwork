@@ -1,4 +1,5 @@
 import type {
+  AdminLogin,
   Artwork,
   ArtworkEntry,
   GitHubUser,
@@ -48,6 +49,18 @@ export async function setReaction(
   }
 }
 
+/**
+ * Remove the user's reaction to the artwork from KV storage
+ * @param artworkId Artwork ID
+ * @param user User's GitHub login
+ * @param reaction Optional specific reaction to remove
+ * @returns void
+ * @example
+ * ```ts
+ * removeReaction(artwork.id, user.login);
+ * removeReaction(artwork.id, user.login, "🍕" as Reaction);
+ * ```
+ */
 export async function removeReaction(
   artworkId: Artwork["id"],
   user: GitHubUser["login"],
@@ -65,11 +78,21 @@ export async function removeReaction(
   await kv.delete(key);
 }
 
+/**
+ * Get all reactions for a specific artwork
+ * @param artworkId Artwork ID
+ * @returns List of reaction entries for the artwork
+ * @example
+ * ```ts
+ * const reactions = await getArtworkReactions(artwork.id);
+ * ```
+ */
 export async function getArtworkReactions(
   artworkId: Artwork["id"],
 ): Promise<ReactionEntry[]> {
   const records = kv.list<Reaction>({ prefix: ["reaction", artworkId] });
   const reactions = [];
+
   for await (const res of records) {
     reactions.push({
       artworkId,
@@ -81,11 +104,21 @@ export async function getArtworkReactions(
   return reactions;
 }
 
+/**
+ * Get all reactions from a specific user
+ * @param user User's GitHub login
+ * @returns List of reaction entries for the user
+ * @example
+ * ```ts
+ * const reactions = await getUserReactions(user.login);
+ * ```
+ */
 export async function getUserReactions(
   user: GitHubUser["login"],
 ): Promise<ReactionEntry[]> {
   const records = kv.list<Reaction>({ prefix: ["reaction"] });
   const reactions = [];
+
   for await (const res of records) {
     if (res.key[2] === user) {
       reactions.push({
@@ -114,6 +147,7 @@ export async function getReactions(
 ): Promise<ReactionEntry[] | ReactionEntry> {
   const prefix = id ? ["reaction", id] : ["reaction"];
   const records = kv.list<Reaction>({ prefix });
+
   const reactions = [];
   for await (const res of records) {
     reactions.push({
@@ -126,10 +160,29 @@ export async function getReactions(
   return id ? reactions[0] : reactions;
 }
 
+/**
+ * Get all saved artwork from KV storage
+ * @uses {@link kvArray}
+ * @returns List of all saved artwork
+ * @example
+ * ```ts
+ * const artwork = await loadSavedArtwork();
+ * ```
+ */
 export async function loadSavedArtwork(): Promise<Artwork[]> {
   return await kvArray({ prefix: ["artist"] });
 }
 
+/**
+ * Delete artwork from KV storage.
+ * Logs an error if the artwork could not be deleted.
+ * @param artwork Artwork to delete
+ * @returns void
+ * @example
+ * ```ts
+ * deleteArtwork(artwork);
+ * ```
+ */
 export async function deleteArtwork({ id, artist }: Artwork) {
   try {
     await kv.delete(["artist", artist.id ?? artist.github, id]);
@@ -139,6 +192,19 @@ export async function deleteArtwork({ id, artist }: Artwork) {
   }
 }
 
+/**
+ * Get artwork from KV storage.
+ * If an ID is provided, returns a single artwork.
+ * Otherwise, returns all artwork.
+ * @param id Optional artwork ID to get
+ * @returns List of all saved artwork or a single artwork if an ID is provided
+ * @throws Error if an ID is provided and the artwork could not be found
+ * @example
+ * ```ts
+ * const artwork = await getArtwork();
+ * const artwork = await getArtwork(artwork.id);
+ * ```
+ */
 export async function getArtwork(
   id?: Artwork["id"],
 ): Promise<Artwork[] | Artwork> {
@@ -156,6 +222,16 @@ export async function getArtwork(
   return art;
 }
 
+/**
+ * Save artwork to KV storage. Uses artist ID, GitHub username, or slugified name (in that order of availability) as the key.
+ * @param artwork Artwork to save
+ * @returns Promise containing the key for the saved artwork
+ * @throws Error if the artwork could not be saved
+ * @example
+ * ```ts
+ * const [_namespace, artistId, artworkId] = await saveArtwork(artwork);
+ * ```
+ */
 export async function saveArtwork(artwork: Artwork): Promise<string[]> {
   const key = [
     "artist",
@@ -186,12 +262,26 @@ export async function saveArtwork(artwork: Artwork): Promise<string[]> {
   return key;
 }
 
+/**
+ * Get artwork by artist ID.
+ * @uses {@link kvArray}
+ * @param artist Artist to get artwork for
+ * @returns List of artwork for the artist
+ * @example
+ * ```ts
+ * const artwork = await getArtworkByArtist("jasonjgardner");
+ * ```
+ */
 export async function getArtworkByArtist(
   artist: Artwork["artist"]["id"],
 ): Promise<Artwork[]> {
   return await kvArray<Artwork>({ prefix: ["artist", artist] });
 }
 
+/**
+ * Return all artwork with reactions
+ * @returns Array of artwork with reactions to the artworks
+ */
 export async function getArtworkEntries(): Promise<ArtworkEntry[]> {
   const artworks = await loadSavedArtwork();
   const reactions = await getReactions() as ReactionEntry[];
@@ -202,6 +292,12 @@ export async function getArtworkEntries(): Promise<ArtworkEntry[]> {
   }));
 }
 
+/**
+ * Return all artwork with reactions, sorted by reaction count
+ * @uses {@link getReactions}
+ * @param artworks Array of artwork to sort
+ * @returns Array of artwork with reactions to the artworks, sorted by reaction count
+ */
 export async function sortByReactionCount(
   artworks: Artwork[],
 ): Promise<ArtworkEntry[]> {
@@ -234,23 +330,34 @@ export async function sortByReactionCount(
   }));
 }
 
-export async function logUserSignIn(user: GitHubUser) {
+/**
+ * Tracks when a user last signed in and returns the last login date
+ * @returns Last login date as an ISO string
+ */
+export async function logUserSignIn({ id, login }: GitHubUser) {
   const key = [
     "user",
-    user.login,
+    login,
   ];
+
+  const existing = await kv.get<AdminLogin>(key);
+
+  const newValue = {
+    user: {
+      id,
+      login,
+    },
+    lastLogin: new Date().toISOString(),
+  };
 
   const res = await kv.set(
     key,
-    [user.id, user.login],
-    {
-      expireIn: 60 * 60 * 24,
-    },
+    newValue,
   );
 
   if (!res.ok) {
     throw new Error(`Failed to log user: ${key.join("/")}`);
   }
 
-  return (await kv.get<[string, string]>(key)).versionstamp;
+  return existing?.value?.lastLogin ?? newValue.lastLogin;
 }

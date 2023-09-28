@@ -53,3 +53,17 @@ export interface ReactionResponse {
   details: ReactionDetails;
   reactions: Reactions;
 }
+
+/**
+ * KV store of admin logins
+ * @param user.id - GitHub user ID
+ * @param user.login - GitHub username
+ * @param lastLogin - Last login date as ISO string
+ */
+export interface AdminLogin {
+  user: {
+    id: string;
+    login: string;
+  };
+  lastLogin: string;
+}
