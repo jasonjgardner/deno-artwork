@@ -209,8 +209,8 @@ export default function ReactionButton(
             <div
               key={reaction}
               class={cx(
-                "group-btn flex-1 flex justify-center items-stretch px-1",
-                count && "relative",
+                "group-btn flex-1 flex justify-center items-stretch",
+                showUsers && count && "relative",
                 users.includes(user?.login ?? "")
                   ? "bg(gray-100 hover:(gray-200)) border-t border-t-gray-300 -mt-px"
                   : "bg(white hover:(gray-50))",
@@ -234,9 +234,9 @@ export default function ReactionButton(
                   class="hidden
                     checked:siblings:(font-semibold text(pink-500) bg-gray-100 border-t border-t-gray-300 -mt-px)))"
                 />
-                <span class="flex items-center justify-center py-2">
+                <span class="flex items-center justify-center py-2 pl-1">
                   {reaction}
-                  <span class="text(gray-800 xs group-btn-hover:(blue-500)) font(normal sans) ml-1">
+                  <span class="text(gray-800 xs group-btn-hover:(blue-500)) font(normal sans) ml-1 pr-1">
                     {count}
                   </span>
                 </span>
