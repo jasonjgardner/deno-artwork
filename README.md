@@ -7,7 +7,7 @@ A Deno artwork gallery that has not gone extinct. Powered by Deno... naturally.
 A small collection of Deno artwork exists at [deno.com/artwork](https://deno.com/artwork), but contributions are no longer accepted there.
 Deno's website had to go closed-source and its [denoland/dotland](https://github.com/denoland/dotland) repository has been turned into a public archive. 
 
-But dry your eyes! Here is a new and improved Deno artwork gallery to take its place. Made with Fresh and Deno KV.
+Dry your eyes! Here is a new and improved Deno artwork gallery to take its place. Made with [all the Deno fixins](#exemplary-environment).
 
 __[artwork.deno.dev](https://artwork.deno.dev "Deno Artwork Gallery")__
 
@@ -31,5 +31,21 @@ __[artwork.deno.dev](https://artwork.deno.dev "Deno Artwork Gallery")__
   - RSS feed — because why not!
 - Open-source. __Accepting code and artwork contributions.__
 
-# Image License
-Deno images are distributed under the MIT license (public domain and free for use).
+# Contributing
+
+Reacting to artwork (requires GitHub login), [Starring this repo](https://github.com/jasonjgardner/deno-artwork/stargazers), and creating PRs highly encouraged. 
+
+## Artwork
+1. [Fork the repo](https://github.com/jasonjgardner/deno-artwork/fork)
+2. Make art. (AI welcome!)
+3. Save your image in [`./static/images/artwork/`](https://github.com/jasonjgardner/deno-artwork/edit/main/static/images/artwork/)
+4. [Edit `./data/artwork.json`](https://github.com/jasonjgardner/deno-artwork/edit/main/data/artwork.json) (There's a [schema](https://github.com/jasonjgardner/deno-artwork/edit/main/data/artwork.schema.json) to follow.)
+5. Pretty please use the [`.github/PULL_REQUEST_TEMPLATE/art_pr.md`](https://github.com/jasonjgardner/deno-artwork/blob/main/.github/PULL_REQUEST_TEMPLATE/art_pr.md?plain=1) format in a [new PR](https://github.com/jasonjgardner/deno-artwork/compare).
+
+## Code
+1. [Fork the repo](https://github.com/jasonjgardner/deno-artwork/fork)
+2. Work your magic. (AI welcome!)
+3. Pretty please use the [`.github/PULL_REQUEST_TEMPLATE/code_pr.md`](https://github.com/jasonjgardner/deno-artwork/blob/main/.github/PULL_REQUEST_TEMPLATE/code_pr.md?plain=1) format in a [new PR](https://github.com/jasonjgardner/deno-artwork/compare).
+
+# License
+Deno images are distributed under the MIT license (public domain and free for use), unless otherwise noted. Repository code is distributed under the MIT license.
