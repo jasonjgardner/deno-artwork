@@ -59,11 +59,21 @@ export default function Admin({
   data,
 }: PageProps<AdminProps>) {
   return (
-    <section class="p-2">
-      <h1>Admin</h1>
-      {data?.success && <p>Successfully saved static artwork</p>}
-      <form method="post">
-        <button type="submit">Save static artwork</button>
+    <section class="px-2 py-4 container-fluid mx-auto flex flex-col">
+      <h1 class="text(2xl gray-900) font(sans bold)">Admin</h1>
+
+      <form class="flex items-center justify-start mt-6" method="post">
+        {data?.success && (
+          <p class="text(green-600 sm) font(sans medium) bg(green-100) rounded-lg shadow border border(green-600) px-4 py-2 order-1 ml-4">
+            Successfully saved static artwork!
+          </p>
+        )}
+        <button
+          class="cursor-pointer border border(gray-400) rounded-md shadow px-6 py-2 bg(gray-50)"
+          type="submit"
+        >
+          Save static artwork
+        </button>
       </form>
 
       <h2 class="font(sans bold) text(xl gray-900) leading-relaxed mt-4 pb-2">
@@ -161,9 +171,9 @@ export default function Admin({
                     {artwork.artist.name}
                   </a>
                 </td>
-                <td>
+                <td class="w-96 truncate whitespace-nowrap">
                   <a
-                    class="text(xs blue-500 underline) font(sans normal) hover:(no-underline text(blue-600)) px-2 truncate"
+                    class="text(xs blue-500 underline) font(sans normal) hover:(no-underline text(blue-600)) px-2"
                     href={artwork.image}
                     target="_blank"
                   >
@@ -210,25 +220,74 @@ export default function Admin({
           </tbody>
         </table>
       </div>
-      <h2>Reactions</h2>
-      <table class="table-auto">
-        <thead>
-          <tr>
-            <td>Artwork ID</td>
-            <td>Reaction</td>
-            <td>User</td>
-          </tr>
-        </thead>
-        <tbody>
-          {data?.reactions.map((reaction, idx) => (
-            <tr key={idx}>
-              <td>{reaction.artworkId}</td>
-              <td>{reaction.reaction}</td>
-              <td>{reaction.user}</td>
+
+      <h2 class="font(sans bold) text(xl gray-900) leading-relaxed mt-8 pb-2">
+        Reactions{" "}
+        <span class="text(gray-400 sm) font-normal">
+          ({data?.reactions.length ?? 0})
+        </span>
+      </h2>
+
+      <div class="border border(gray-300) rounded-md mr-auto flex flex-col">
+        <table class="table-auto">
+          <thead>
+            <tr class="divide(x gray-300) border(b gray-300)">
+              <td
+                class="text(sm left gray-900) font(sans semibold) px-1 py-2"
+                scope="col"
+              >
+                Artwork ID
+              </td>
+              <td
+                class="text(sm left gray-900) font(sans semibold) px-1 py-2"
+                scope="col"
+              >
+                Reaction
+              </td>
+              <td
+                class="text(sm left gray-900) font(sans semibold) px-1 py-2"
+                scope="col"
+              >
+                User
+              </td>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody class="divide(y gray-300)">
+            {data?.reactions.map((reaction, idx) => (
+              <tr
+                key={`${reaction.artworkId}-${reaction.reaction}-${reaction.user}`}
+                class={cx(
+                  idx % 2 === 0 ? "bg-gray-100" : "",
+                  "hover:(bg-blue-50 text(gray-900)) transition duration-200 ease-out",
+                  "h-12 divide(x gray-300)",
+                )}
+              >
+                <td>
+                  <a
+                    class="text(sm blue-500 underline) font(sans bold) hover:(no-underline text(blue-600)) px-2"
+                    href={`/piece/${reaction.artworkId}`}
+                  >
+                    {reaction.artworkId}
+                  </a>
+                </td>
+                <td class="text-center">
+                  {reaction.reaction}
+                </td>
+                <td>
+                  <a
+                    class="text(xs blue-500 underline) font(sans normal) hover:(no-underline text(blue-600)) px-2"
+                    href={`https://github.com/${reaction.user}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {reaction.user}
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 }
