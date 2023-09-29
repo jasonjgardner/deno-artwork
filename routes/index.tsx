@@ -55,7 +55,7 @@ export default function Home({ data }: PageProps<HomeProps | null>) {
         />
         <meta
           property="og:image"
-          content={asset("/images/og.png")}
+          content={asset("/images/og.jpg")}
         />
         <meta
           property="og:url"
